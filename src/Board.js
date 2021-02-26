@@ -6,6 +6,13 @@ import io from 'socket.io-client';
 
 const socket = io(); //connect to server app.py
 
+// export function LoggingIn(props) {
+//   const [users, setUsers] = useState([]);
+//   setUsers(prevUsers => [...users]);
+//   return (
+//     <button >Login</button>
+//     );
+// }
 export function Board(props) {
 
   const [board, setBoard] = useState([]);
@@ -21,13 +28,14 @@ export function Board(props) {
       }
     }
     if( turn > 8) {
-      console.log('no more turns')
-      setBoard(board[" "]);
-      
+      console.log('no more turns');
     }
-    setBoard(prevBoard => [...board]);
+    
+    console.log("hello");
+    setBoard(board);
     setTurn(turn+1);
-
+    
+    console.log(board);
     socket.emit('board', { 'board': board });
   }
 
@@ -39,7 +47,7 @@ export function Board(props) {
       console.log(data);
       // If the server sends a message (on behalf of another client), then we
       // add it to the list of messages to render it on the UI.
-      setBoard(prevBoard => [...data.board]);
+      setBoard(data.board);
     });
   }, []);
 

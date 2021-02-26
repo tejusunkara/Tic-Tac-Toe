@@ -2,7 +2,9 @@ import logo from './logo.svg';
 import './App.css';
 import { Board } from './Board.js';
 import './Board.css';
+import io from 'socket.io-client';
 
+const socket = io();
 
 function App() {
   
