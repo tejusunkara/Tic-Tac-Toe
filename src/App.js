@@ -10,24 +10,37 @@ const socket = io();
 
 export function LoggingIn(props) {
   const [isLoggedIn, setLogin] = useState(false);
+  if (isLoggedIn) {
+    socket.emit('login', { 'user': 0 });
+  }
   return (
-    <button onClick={() => setLogin(true)}>Login</button>
+    <form >
+      <button onClick={() => setLogin(true)}>Login</button>
+    </form>
     );
 }
 
 
 function App() {
+  const formSubmit = event => {
+    event.preventDefault();
+    <Board />
+  }
   return (
-    
-    <div class="tictac">
-      <div class="login">
+    <div class="login">
+      <form onSubmit={formSubmit}>
         <h1>Please login</h1>
+        <label for="username">Username: </label>
+        <input type="text" name="username" />
         <LoggingIn /> 
-      </div>
-      <h1>My Tic Tac Toe Board</h1>
-      <Board />
+      </form>
     </div>
   );
 }
 
 export default App;
+
+    // <div class="tictac">
+    //   <h1>My Tic Tac Toe Board</h1>
+    //   <Board />
+    // </div>
