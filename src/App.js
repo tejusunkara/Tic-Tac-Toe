@@ -1,6 +1,5 @@
 import logo from './logo.svg';
 import './App.css';
-import { useState } from 'react';
 import { Board } from './Board.js';
 import './Board.css';
 
