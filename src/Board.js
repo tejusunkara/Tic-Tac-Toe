@@ -46,15 +46,15 @@ export function Board(props) {
   return  (
     <div class="board">
       
-      <Box id="0" onClick={onClick} />
-      <Box id="1" onClick={onClick} />
-      <Box id="2" onClick={onClick} />
-      <Box id="3" onClick={onClick} />
-      <Box id="4" onClick={onClick} />
-      <Box id="5" onClick={onClick} />
-      <Box id="6" onClick={onClick} />
-      <Box id="7" onClick={onClick} />
-      <Box id="8" onClick={onClick} />
+      <Box onClick={() => onClick(0)} board={board[0]}/>
+      <Box onClick={() => onClick(1)} board={board[1]}/>
+      <Box onClick={() => onClick(2)} board={board[2]}/>
+      <Box onClick={() => onClick(3)} board={board[3]}/>
+      <Box onClick={() => onClick(4)} board={board[4]}/>
+      <Box onClick={() => onClick(5)} board={board[5]}/>
+      <Box onClick={() => onClick(6)} board={board[6]}/>
+      <Box onClick={() => onClick(7)} board={board[7]}/>
+      <Box onClick={() => onClick(8)} board={board[8]}/>
       
     </div>
     );
