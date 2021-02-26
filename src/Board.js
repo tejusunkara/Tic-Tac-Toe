@@ -6,13 +6,6 @@ import io from 'socket.io-client';
 
 const socket = io(); //connect to server app.py
 
-// export function LoggingIn(props) {
-//   const [users, setUsers] = useState([]);
-//   setUsers(prevUsers => [...users]);
-//   return (
-//     <button >Login</button>
-//     );
-// }
 export function Board(props) {
 
   const [board, setBoard] = useState([]);
@@ -31,7 +24,6 @@ export function Board(props) {
       console.log('no more turns');
     }
     
-    console.log("hello");
     setBoard(board);
     setTurn(turn+1);
     

@@ -7,6 +7,8 @@ app = Flask(__name__, static_folder='./build/static')
 
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
+users=[]
+
 socketio = SocketIO(
     app,
     cors_allowed_origins="*",
