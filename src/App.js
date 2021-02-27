@@ -2,22 +2,61 @@ import React, { useState, useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { Board } from './Board.js';
+import { Greeting } from './Greeting.js'
 import './Board.css';
 import io from 'socket.io-client';
 
 const socket = io();
 
-export function LoggingIn(props) {
+function App(props) {
   const [user, setUser] = useState('');
   const [userCount, setUserCount] = useState(0);
+  const [isLoggedIn, setLogin] = useState(false);
   
-  function onClickButton() {
+  function onClickButton(props) {
     //once user is 'logged in', emit message with user's username & number of users
+    setLogin(true);
     socket.emit('login', { 'user': user, 'userCount': userCount });
     console.log(user+' is logged in');
-    // setUserCount(userCount+1);
     console.log(userCount);
   }
+  
+  
+  useEffect(() => {
+    socket.on('login', (data) => {
+      console.log('Login was clicked');
+      console.log(data.user);
+      setUser(data.user);
+      setUserCount(data.userCount + 1);
+    });
+  }, []);
+  
+  
+  console.log(isLoggedIn);
+  return (
+  <div>
+    <div class="loggingIn">
+      <h1>Please login</h1>
+      <label for="username">Username: </label>
+      <input type="text" name="username" onChange={e => setUser(e.target.value)}/>
+      <button onClick={() => onClickButton()} >Login</button>
+      
+    </div>
+    <Greeting playerLogin={isLoggedIn}/>
+  </div>
+  );
+}
+
+export default App;
+
+    // <div class="tictac">
+    //   <h1>My Tic Tac Toe Board</h1>
+    //   <Board />
+    // </div>
+  
+  // <form >
+  //     <button onClick={() => setLogin(true)}>Login</button>
+  //   </form>
   
     
   // useEffect(() => {
@@ -36,45 +75,3 @@ export function LoggingIn(props) {
   //     }
   //   }
   // }, []);
-  
-  useEffect(() => {
-    socket.on('login', (data) => {
-      console.log('Login was clicked');
-      console.log(data.user);
-      setUser(data.user);
-      setUserCount(data.userCount + 1);
-    });
-  }, []);
-
-  return (
-    <div class="loggingIn">
-      <h1>Please login</h1>
-      <label for="username">Username: </label>
-      <input type="text" name="username" onChange={e => setUser(e.target.value)}/>
-      <button onClick={() => onClickButton()} >Login</button>
-    </div>
-
-    );
-}
-
-function App() {
-  
-  return (
-    <div class="tictac">
-      <LoggingIn/>
-      <h1>My Tic Tac Toe Board</h1>
-      {<Board />}
-    </div>
-  );
-}
-
-export default App;
-
-    // <div class="tictac">
-    //   <h1>My Tic Tac Toe Board</h1>
-    //   <Board />
-    // </div>
-  
-  // <form >
-  //     <button onClick={() => setLogin(true)}>Login</button>
-  //   </form>
