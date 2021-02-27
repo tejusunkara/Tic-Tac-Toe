@@ -1,10 +1,11 @@
 //client
-import React from 'react';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box } from './Box.js';
 import io from 'socket.io-client';
 
 const socket = io(); //connect to server app.py
+
+
 
 export function Board(props) {
 

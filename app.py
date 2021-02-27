@@ -8,9 +8,7 @@ app = Flask(__name__, static_folder='./build/static')
 
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
-player_type = {'PlayerX':'', 'PlayerO':''}
-playerX = ''
-playerO = ''
+players = {'PlayerX':'', 'PlayerO':''}
 spectators=[]
 
 socketio = SocketIO(
@@ -46,19 +44,23 @@ def on_board(data): # data is whatever arg you pass in your emit call on client
 
 @socketio.on('login')
 def on_login(data):
-    if data['userCount'] == 1:
-        player_type['PlayerX'] = data['user']
-    elif data['userCount'] == 2:
-        player_type['PlayerO'] = data['user']
+    if data['userCount'] == 0:
+        players['PlayerX'] = data['user']
+    elif data['userCount'] == 1:
+        players['PlayerO'] = data['user']
     else:
         spectators.append(data['user'])
-    playerX=player_type['PlayerX']
-    playerO=player_type['PlayerO']
+    print('user: '+data['user'])
+    print('user count: '+str(data['userCount']))
     print(spectators)
-    
+    print(players)
     #if a player is allowed to play, emit them
-    socketio.emit('login',  player_type, broadcast=True, include_self=False)
+    socketio.emit('login',  players, broadcast=True, include_self=False)
 
+@socketio.on('logout')
+def on_logout(data):
+    print('log out')
+    socketio.emit('logout', data, broadcast=True, include_self=False)
 # Note that we don't call app.run anymore. We call socketio.run with app arg
 socketio.run(
     app,
