@@ -1,3 +1,4 @@
+#server
 import os
 from flask import Flask, send_from_directory, json, session
 from flask_socketio import SocketIO
@@ -7,7 +8,10 @@ app = Flask(__name__, static_folder='./build/static')
 
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
-users=[]
+player_type = {'PlayerX':'', 'PlayerO':''}
+playerX = ''
+playerO = ''
+spectators=[]
 
 socketio = SocketIO(
     app,
@@ -42,8 +46,18 @@ def on_board(data): # data is whatever arg you pass in your emit call on client
 
 @socketio.on('login')
 def on_login(data):
-    users.append(data)
-    print('Username entered!')
+    if data['userCount'] == 1:
+        player_type['PlayerX'] = data['user']
+    elif data['userCount'] == 2:
+        player_type['PlayerO'] = data['user']
+    else:
+        spectators.append(data['user'])
+    playerX=player_type['PlayerX']
+    playerO=player_type['PlayerO']
+    print(spectators)
+    
+    #if a player is allowed to play, emit them
+    socketio.emit('login',  player_type, broadcast=True, include_self=False)
 
 # Note that we don't call app.run anymore. We call socketio.run with app arg
 socketio.run(
