@@ -12,6 +12,9 @@ function App(props) {
   const [user, setUser] = useState('');
   const [userCount, setUserCount] = useState(0);
   const [isLoggedIn, setLogin] = useState(false);
+  const [playerX, setPlayerX] = useState('');
+  const [playerO, setPlayerO] = useState('');
+  const [spectators, setSpectators] = useState([]);
   
   function onClickButton(props) {
     //once user is 'logged in', emit message with user's username & number of users
@@ -19,18 +22,21 @@ function App(props) {
     socket.emit('login', { 'user': user, 'userCount': userCount });
     console.log(user+' is logged in');
     console.log('user count: '+userCount);
+    console.log('player X: '+playerX);
+    console.log('player O: '+playerO);
   }
   
-  
-  useEffect(() => {
+  useEffect(() => {//getting back user data from server
     socket.on('login', (data) => {
       console.log('Login was clicked');
       console.log('user: '+data.user);
       setUser(data.user);
       setUserCount(data.userCount + 1);
+      setPlayerX(data.PlayerX);
+      setPlayerO(data.PlayerO);
+      setSpectators(data.spectators);
     });
   }, []);
-  
   
   console.log('logged in? '+isLoggedIn);
   return (
@@ -42,7 +48,7 @@ function App(props) {
       <button onClick={() => onClickButton()} >Login</button>
       
     </div>
-    <Greeting playerLogin={isLoggedIn}/>
+    <Greeting playerLogin={isLoggedIn} playerX={playerX} playerO={playerO} spectators={spectators}/>
   </div>
   );
 }

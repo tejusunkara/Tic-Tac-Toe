@@ -1,11 +1,25 @@
 import React from 'react';
-import { LoggingIn } from './App.js';
+import { App } from './App.js';
 import { Board } from './Board.js';
 
 export function Greeting(props) {
     if(props.playerLogin) {
       return (
-        <UserBoard/>
+        <div>
+          <UserBoard/>
+          <ul>
+            Player X: {props.playerX}
+          </ul>
+          <ul>
+            Player O: {props.playerO}
+          </ul>
+          <ul>
+            Spectators: {props.spectators.map(spectator => (
+              <li>{spectator}</li>
+      ))}
+
+          </ul>
+        </div>
       );
     } else {
       return (

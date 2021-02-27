@@ -50,10 +50,15 @@ def on_login(data):
         players['PlayerO'] = data['user']
     else:
         spectators.append(data['user'])
+    
+    data['PlayerX'] = players['PlayerX']
+    data['PlayerO'] = players['PlayerO']
+    data['spectators'] = spectators
     print('user: '+data['user'])
     print('user count: '+str(data['userCount']))
     print(spectators)
     print(players)
+    print(data)
     #if a player is allowed to play, emit them
     socketio.emit('login',  data, broadcast=True, include_self=False)
 
