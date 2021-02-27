@@ -18,21 +18,21 @@ function App(props) {
     setLogin(true);
     socket.emit('login', { 'user': user, 'userCount': userCount });
     console.log(user+' is logged in');
-    console.log(userCount);
+    console.log('user count: '+userCount);
   }
   
   
   useEffect(() => {
     socket.on('login', (data) => {
       console.log('Login was clicked');
-      console.log(data.user);
+      console.log('user: '+data.user);
       setUser(data.user);
       setUserCount(data.userCount + 1);
     });
   }, []);
   
   
-  console.log(isLoggedIn);
+  console.log('logged in? '+isLoggedIn);
   return (
   <div>
     <div class="loggingIn">
