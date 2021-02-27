@@ -5,8 +5,6 @@ import io from 'socket.io-client';
 
 const socket = io(); //connect to server app.py
 
-
-
 export function Board(props) {
 
   const [board, setBoard] = useState([]);

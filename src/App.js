@@ -8,18 +8,17 @@ import io from 'socket.io-client';
 const socket = io();
 
 export function LoggingIn(props) {
-  const [isLoggedIn, setLogin] = useState(false);
   const [user, setUser] = useState('');
   const [userCount, setUserCount] = useState(0);
   
-  //once user is 'logged in', emit message with user's username & number of users
-  if (isLoggedIn) { 
+  function onClickButton() {
+    //once user is 'logged in', emit message with user's username & number of users
     socket.emit('login', { 'user': user, 'userCount': userCount });
     console.log(user+' is logged in');
+    // setUserCount(userCount+1);
     console.log(userCount);
-    setUserCount(userCount+1);
-    setLogin(false);
-    }
+  }
+  
     
   // useEffect(() => {
   //   if (isLoggedIn) { 
@@ -41,9 +40,9 @@ export function LoggingIn(props) {
   useEffect(() => {
     socket.on('login', (data) => {
       console.log('Login was clicked');
-      console.log(data);
+      console.log(data.user);
       setUser(data.user);
-      // setUserCount(data.userCount);
+      setUserCount(data.userCount + 1);
     });
   }, []);
 
@@ -52,7 +51,7 @@ export function LoggingIn(props) {
       <h1>Please login</h1>
       <label for="username">Username: </label>
       <input type="text" name="username" onChange={e => setUser(e.target.value)}/>
-      <button onClick={() => setLogin(true)} >Login</button>
+      <button onClick={() => onClickButton()} >Login</button>
     </div>
 
     );

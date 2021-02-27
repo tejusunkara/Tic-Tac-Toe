@@ -55,7 +55,7 @@ def on_login(data):
     print(spectators)
     print(players)
     #if a player is allowed to play, emit them
-    socketio.emit('login',  players, broadcast=True, include_self=False)
+    socketio.emit('login',  data, broadcast=True, include_self=False)
 
 @socketio.on('logout')
 def on_logout(data):
