@@ -14,8 +14,20 @@
 	text-align: center;
 }
 
+.Board {
+	text-align: center;
+}
+
+.tictac {
+	text-align: center;
+}
+
 .h3 {
 	color: red;
 	text-align: center;
+}
 
+.next {
+	font-family: sans-serif;
+	font-size: 20px;
 }

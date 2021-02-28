@@ -1,83 +1,51 @@
-import React, { useState, useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { Board } from './Board.js';
 import { Greeting } from './Greeting.js'
 import './Board.css';
 import io from 'socket.io-client';
+import { useState, useEffect, useRef } from 'react';
+
 
 const socket = io();
 
 function App(props) {
-  const [user, setUser] = useState('');
-  const [userCount, setUserCount] = useState(0);
-  const [isLoggedIn, setLogin] = useState(false);
-  const [playerX, setPlayerX] = useState('');
-  const [playerO, setPlayerO] = useState('');
-  const [spectators, setSpectators] = useState([]);
+  const [userList, setUserList] = useState([]); //list of users
+  const [isLoggedIn, setLogin] = useState(false); //boolean value if user is logged in
+  const inputRef = useRef(null);  //for username input
   
   function onClickButton(props) {
     //once user is 'logged in', emit message with user's username & number of users
+    if (inputRef != null) {
+      const username = inputRef.current.value;  //username is set to the input value
+      console.log('username: '+username);
+      setUserList(prevList => [...prevList, username]); //updating userList and adding username 
+      console.log('user list: '+userList);
+      socket.emit('login', { 'userList': userList, 'username': username }); //emitting to the server
+    }
     setLogin(true);
-    socket.emit('login', { 'user': user, 'userCount': userCount });
-    console.log(user+' is logged in');
-    console.log('user count: '+userCount);
-    console.log('player X: '+playerX);
-    console.log('player O: '+playerO);
   }
+  
+  console.log(userList);
   
   useEffect(() => {//getting back user data from server
     socket.on('login', (data) => {
-      console.log('Login was clicked');
-      console.log('user: '+data.user);
-      setUser(data.user);
-      setUserCount(data.userCount + 1);
-      setPlayerX(data.PlayerX);
-      setPlayerO(data.PlayerO);
-      setSpectators(data.spectators);
+      console.log('data from server: '+data);
+      setUserList(prevList => [...prevList, data.username])
     });
   }, []);
   
-  console.log('logged in? '+isLoggedIn);
   return (
   <div>
     <div class="loggingIn">
       <h1>Please login</h1>
       <label for="username">Username: </label>
-      <input type="text" name="username" onChange={e => setUser(e.target.value)}/>
+      <input ref={inputRef} type="text"  />
       <button onClick={() => onClickButton()} >Login</button>
-      
     </div>
-    <Greeting playerLogin={isLoggedIn} playerX={playerX} playerO={playerO} spectators={spectators}/>
+    <Greeting playerLogin={isLoggedIn} playerX={userList[0]} playerO={userList[1]} spectators={userList.slice(2)}/>
   </div>
   );
 }
 
 export default App;
-
-    // <div class="tictac">
-    //   <h1>My Tic Tac Toe Board</h1>
-    //   <Board />
-    // </div>
-  
-  // <form >
-  //     <button onClick={() => setLogin(true)}>Login</button>
-  //   </form>
-  
-    
-  // useEffect(() => {
-  //   if (isLoggedIn) { 
-  //   socket.emit('login', { 'user': user, 'userCount': userCount });
-  //   console.log(user+' is logged in');
-  //   console.log(userCount);
-  //   setUserCount(userCount+1);
-  //   setLogin(false);
-  //   }
-    
-  //   return () => {
-  //     if(isLoggedIn) {
-  //       console.log('log out');
-  //       socket.emit('logout', {'user': user})
-  //     }
-  //   }
-  // }, []);

@@ -1,5 +1,4 @@
 import React from 'react';
-import { App } from './App.js';
 import { Board } from './Board.js';
 
 export function Greeting(props) {
@@ -15,9 +14,8 @@ export function Greeting(props) {
           </ul>
           <ul>
             Spectators: {props.spectators.map(spectator => (
-              <li>{spectator}</li>
-      ))}
-
+              <li>{props.spectators}</li>
+            ))}
           </ul>
         </div>
       );
@@ -30,7 +28,7 @@ export function Greeting(props) {
   
 function UserBoard () {
   return (
-    <div class="tictac">
+    <div className="tictac">
       <h1>My Tic Tac Toe Board</h1>
       {<Board/>}
     </div>

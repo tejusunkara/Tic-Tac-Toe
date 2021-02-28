@@ -10,6 +10,7 @@ cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
 players = {'PlayerX':'', 'PlayerO':''}
 spectators=[]
+current_player=''
 
 socketio = SocketIO(
     app,
@@ -38,29 +39,18 @@ def on_disconnect():
 @socketio.on('board')
 def on_board(data): # data is whatever arg you pass in your emit call on client
     print(data)
+    
     # This emits the 'chat' event from the server to all clients except for
     # the client that emmitted the event that triggered this function
     socketio.emit('board',  data, broadcast=True, include_self=False)
 
 @socketio.on('login')
 def on_login(data):
-    if data['userCount'] == 0:
-        players['PlayerX'] = data['user']
-    elif data['userCount'] == 1:
-        players['PlayerO'] = data['user']
-    else:
-        spectators.append(data['user'])
-    
-    data['PlayerX'] = players['PlayerX']
-    data['PlayerO'] = players['PlayerO']
-    data['spectators'] = spectators
-    print('user: '+data['user'])
-    print('user count: '+str(data['userCount']))
-    print(spectators)
-    print(players)
     print(data)
+    
     #if a player is allowed to play, emit them
     socketio.emit('login',  data, broadcast=True, include_self=False)
+
 
 @socketio.on('logout')
 def on_logout(data):

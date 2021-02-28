@@ -1,6 +1,7 @@
 //client
 import React, { useState, useEffect } from 'react';
 import { Box } from './Box.js';
+import { App } from './App.js';
 import io from 'socket.io-client';
 
 const socket = io(); //connect to server app.py
@@ -15,28 +16,18 @@ export function Board(props) {
     
     if( turn <= 8) {
       board[boxNumber] = xIsNext ? "X" : "O";
+      // if(xIsNext) {
+      //   //if next player is X, keep playerO from clicking
+        
+      // }
       setBoard(board);
       setNext(!xIsNext);
-    // if (xIsNext) {
-    //   board[boxNumber] = "X";
-    //   squares[boxNumber] = xIsNext ? "X" : "O";
-    //   setBoard(squares);
-    //   setNext(!xIsNext);
-    // }
-    // else {
-    //   board[boxNumber] = "O";
-    //   squares[boxNumber] = xIsNext ? "X" : "O";
-    //   setNext(false);
-    // }
-    // }
-    // if( turn > 8) {
-    //   console.log('no more turns');
     }
     
     setTurn(turn+1);
     console.log('board at turn '+turn);
     console.log(board);
-    socket.emit('board', { 'board': board, 'xIsNext': xIsNext });
+    socket.emit('board', { 'board': board, 'cell': boxNumber, 'xIsNext': xIsNext});
   }
 
   useEffect(() => {
@@ -49,14 +40,16 @@ export function Board(props) {
       // add it to the list of messages to render it on the UI.
       setBoard(data.board);
       setNext(!data.xIsNext);
+      setNext(data.turn);
     });
   }, []);
   
   const status = 'Next player: '+(xIsNext ? 'X' : 'O');
   return  (
     <div>
-      <div class="next">{ status }</div>
-      <div class="board">
+      <div className="next">{ status }</div>
+      
+      <div className="board">
         
         <Box onClick={() => onClick(0)} board={board[0]}/>
         <Box onClick={() => onClick(1)} board={board[1]}/>
