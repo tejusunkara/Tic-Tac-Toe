@@ -8,10 +8,6 @@ app = Flask(__name__, static_folder='./build/static')
 
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
-players = {'PlayerX':'', 'PlayerO':''}
-spectators=[]
-current_player=''
-
 socketio = SocketIO(
     app,
     cors_allowed_origins="*",
@@ -47,7 +43,6 @@ def on_board(data): # data is whatever arg you pass in your emit call on client
 @socketio.on('login')
 def on_login(data):
     print(data)
-    
     #if a player is allowed to play, emit them
     socketio.emit('login',  data, broadcast=True, include_self=False)
 

@@ -41,7 +41,7 @@ function App(props) {
       <h1>Please login</h1>
       <label for="username">Username: </label>
       <input ref={inputRef} type="text"  />
-      <button onClick={() => onClickButton()} >Login</button>
+      <button class="loginbtn" onClick={() => onClickButton()} >Login</button>
     </div>
     <Greeting playerLogin={isLoggedIn} playerX={userList[0]} playerO={userList[1]} spectators={userList.slice(2)}/>
   </div>

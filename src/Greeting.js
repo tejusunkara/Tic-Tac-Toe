@@ -5,7 +5,7 @@ export function Greeting(props) {
     if(props.playerLogin) {
       return (
         <div>
-          <UserBoard/>
+          <UserBoard PlayerX={props.playerX} PlayerO={props.playerO} Spectators={props.spectators}/>
           <ul>
             Player X: {props.playerX}
           </ul>
@@ -14,7 +14,7 @@ export function Greeting(props) {
           </ul>
           <ul>
             Spectators: {props.spectators.map(spectator => (
-              <li>{props.spectators}</li>
+              <li>{spectator}</li>
             ))}
           </ul>
         </div>
@@ -26,11 +26,11 @@ export function Greeting(props) {
     }
   }
   
-function UserBoard () {
+function UserBoard (props) {
   return (
     <div className="tictac">
       <h1>My Tic Tac Toe Board</h1>
-      {<Board/>}
+      {<Board PlayerX={props.playerX} PlayerO={props.playerO} Spectators={props.spectators}/>}
     </div>
   );
 }
