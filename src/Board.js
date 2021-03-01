@@ -10,24 +10,45 @@ export function Board(props) {
 
   const [board, setBoard] = useState([]);
   const [turn, setTurn] = useState(0);
-  const [xIsNext, setNext] = useState(true);//to check is X is next
+  const [xPlays, setPlay] = useState(true); //to check is player X is next; set to true bc X is starting player
+  var playerX = '';
+  var playerO = '';
+  var username = '';
 
   function onClick(boxNumber) {
-    
-    if( turn <= 8) {
-      board[boxNumber] = xIsNext ? "X" : "O";
-      // if(xIsNext) {
-      //   //if next player is X, keep playerO from clicking
-        
-      // }
+    username = props.username; //current user
+    playerX = props.PlayerX; //player X
+    playerO = props.PlayerO; //player O
+
+    console.log(xPlays ? "X is next" : "O is next");
+    console.log('Current user is ' + username);
+    var isUser = (username == playerX || username == playerO);
+    console.log('user is player X or player O ' + isUser);
+
+    if (isUser && turn <= 8) { //if current user is playerX or playerO
+      if (xPlays && (username == playerX)) {
+        //if next player is X and current user is playerX, print X in cell
+        console.log('X plays, username is = playerX');
+        board[boxNumber] = "X";
+        setTurn(turn + 1); //increment turn and set xPlays only when the right player plays
+        setPlay(!xPlays);
+      }
+      else if (!xPlays && (username == playerO)) {
+        //if next player is O and current user is playerO, print O in cell
+        console.log('O plays, username is = playerO');
+        board[boxNumber] = "O";
+        setTurn(turn + 1); //increment turn and set xPlays only when the right player plays
+        setPlay(!xPlays);
+      }
+
       setBoard(board);
-      setNext(!xIsNext);
+      console.log('board at turn ' + turn + ': ' + board);
+      socket.emit('board', { 'board': board, 'cell': boxNumber, 'xPlays': xPlays, 'turn': turn }); //emits only is playerX or playerO clicks the board
     }
-    
-    setTurn(turn+1);
-    console.log('board at turn '+turn);
-    console.log(board);
-    socket.emit('board', { 'board': board, 'cell': boxNumber, 'xIsNext': xIsNext});
+    else {
+      console.log('board at turn ' + turn + ': ' + board);
+      console.log('user is a spectator => cannot click');
+    }
   }
 
   useEffect(() => {
@@ -39,13 +60,16 @@ export function Board(props) {
       // If the server sends a message (on behalf of another client), then we
       // add it to the list of messages to render it on the UI.
       setBoard(data.board);
-      setNext(!data.xIsNext);
-      setNext(data.turn);
+      setPlay(!data.xPlays);
+      console.log(xPlays);
+      setTurn(data.turn + 1);
+      console.log(turn);
     });
   }, []);
-  
-  const status = 'Next player: '+(xIsNext ? 'X' : 'O');
-  return  (
+
+  const status = 'Next player: ' + (xPlays ? 'X' : 'O');
+
+  return (
     <div>
       <div className="next">{ status }</div>
       
@@ -63,5 +87,5 @@ export function Board(props) {
         
       </div>
     </div>
-    );
+  );
 }

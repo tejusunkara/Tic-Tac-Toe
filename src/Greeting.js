@@ -2,36 +2,35 @@ import React from 'react';
 import { Board } from './Board.js';
 
 export function Greeting(props) {
-    if(props.playerLogin) {
-      return (
-        <div>
-          <UserBoard PlayerX={props.playerX} PlayerO={props.playerO} Spectators={props.spectators}/>
-          <ul>
-            Player X: {props.playerX}
-          </ul>
-          <ul>
-            Player O: {props.playerO}
-          </ul>
-          <ul>
-            Spectators: {props.spectators.map(spectator => (
-              <li>{spectator}</li>
-            ))}
-          </ul>
+  var player_x = props.playerX;
+  var player_o = props.playerO;
+  var username = props.username;
+  var spectators = props.spectators;
+  
+  if (props.playerLogin) {
+    return (
+      <div class="greeting">
+        <div className="tictac">
+          <h1>My Tic Tac Toe Board</h1>
+          {<Board PlayerX={player_x} PlayerO={player_o} Spectators={spectators} username={username}/>}
         </div>
-      );
-    } else {
-      return (
-          <h3></h3>
-        );
-    }
+        <ul>
+          Player X: {player_x}
+        </ul>
+        <ul>
+          Player O: {player_o}
+        </ul>
+        <ul>
+          Spectators: {spectators.map(spectator => (
+            <li>{spectator}</li>
+          ))}
+        </ul>
+      </div>
+    );
   }
-  
-function UserBoard (props) {
-  return (
-    <div className="tictac">
-      <h1>My Tic Tac Toe Board</h1>
-      {<Board PlayerX={props.playerX} PlayerO={props.playerO} Spectators={props.spectators}/>}
-    </div>
-  );
+  else {
+    return (
+      <h3></h3>
+    );
+  }
 }
-  

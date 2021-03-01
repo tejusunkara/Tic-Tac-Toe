@@ -35,22 +35,22 @@ def on_disconnect():
 @socketio.on('board')
 def on_board(data): # data is whatever arg you pass in your emit call on client
     print(data)
-    
     # This emits the 'chat' event from the server to all clients except for
     # the client that emmitted the event that triggered this function
     socketio.emit('board',  data, broadcast=True, include_self=False)
 
 @socketio.on('login')
 def on_login(data):
+    print('logged in')
     print(data)
-    #if a player is allowed to play, emit them
+    
     socketio.emit('login',  data, broadcast=True, include_self=False)
 
+# @socketio.on('logout')
+# def on_logout(data):
+#     print('log out')
+#     socketio.emit('logout', data, broadcast=True, include_self=False)
 
-@socketio.on('logout')
-def on_logout(data):
-    print('log out')
-    socketio.emit('logout', data, broadcast=True, include_self=False)
 # Note that we don't call app.run anymore. We call socketio.run with app arg
 socketio.run(
     app,
