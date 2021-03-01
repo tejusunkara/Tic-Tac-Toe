@@ -6,10 +6,10 @@ export function Greeting(props) {
   var player_o = props.playerO;
   var username = props.username;
   var spectators = props.spectators;
-  
+
   if (props.playerLogin) {
     return (
-      <div class="greeting">
+      <div className="greeting">
         <div className="tictac">
           <h1>My Tic Tac Toe Board</h1>
           {<Board PlayerX={player_x} PlayerO={player_o} Spectators={spectators} username={username}/>}

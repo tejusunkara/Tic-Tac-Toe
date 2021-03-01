@@ -32,23 +32,23 @@ function App(props) {
 
   if (isLoggedIn) {
     console.log(userList);
-    console.log('username: '+username);
+    console.log('username: ' + username);
   }
 
   useEffect(() => { //getting back user data from server
     socket.on('login', (data) => {
-      console.log(data.username+' logged in');
+      console.log(data.username + ' logged in');
       setUserList(prevList => [...prevList, data.username]);
     });
   }, []);
 
   return (
     <div>
-    <div class="loggingIn">
+    <div className="loggingIn">
       <h1>Please login</h1>
       <label for="username">Username: </label>
       <input ref={inputRef} type="text"  />
-      <button class="loginbtn" onClick={() => onClickButton()} >Login</button>
+      <button className="loginbtn" onClick={() => onClickButton()} >Login</button>
     </div>
     <Greeting playerLogin={isLoggedIn} username={username} playerX={userList[0]} playerO={userList[1]} spectators={userList.slice(2)}/>
   </div>
