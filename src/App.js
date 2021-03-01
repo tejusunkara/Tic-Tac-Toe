@@ -1,7 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
 import { Board } from './Board.js';
-import { Greeting } from './Greeting.js'
 import './Board.css';
 import io from 'socket.io-client';
 import { useState, useEffect, useRef } from 'react';
@@ -20,19 +19,10 @@ function App(props) {
     if (inputRef != null) {
       const user = inputRef.current.value; //user is set to the input value
       setUsername(user);
-      console.log('username is ' + user);
       setUserList(prevList => [...prevList, user]); //updating userList by adding user
-      socket.emit('login', { 'userList': userList, 'username': user }); //emitting to the server
+      socket.emit('login', { userList: userList, username: user }); //emitting to the server
     }
     setLogin(true);
-    if (isLoggedIn) {
-      console.log('logged in onClickButton');
-    }
-  }
-
-  if (isLoggedIn) {
-    console.log(userList);
-    console.log('username: ' + username);
   }
 
   useEffect(() => { //getting back user data from server
@@ -42,6 +32,28 @@ function App(props) {
     });
   }, []);
 
+  if (isLoggedIn) { //display once logged in
+    return (
+      <div className="greeting">
+        <div className="tictac">
+          <h1>My Tic Tac Toe Board</h1>
+          {<Board PlayerX={userList[0]} PlayerO={userList[1]} Spectators={userList.slice(2)} username={username}/>}
+        </div>
+        <ul>
+          Player X: {userList[0]}
+        </ul>
+        <ul>
+          Player O: {userList[1]}
+        </ul>
+        <ul>
+          Spectators: {userList.slice(2).map(spectator => (
+            <li>{spectator}</li>
+          ))}
+        </ul>
+      </div>
+    );
+  }
+
   return (
     <div>
     <div className="loggingIn">
@@ -50,7 +62,7 @@ function App(props) {
       <input ref={inputRef} type="text"  />
       <button className="loginbtn" onClick={() => onClickButton()} >Login</button>
     </div>
-    <Greeting playerLogin={isLoggedIn} username={username} playerX={userList[0]} playerO={userList[1]} spectators={userList.slice(2)}/>
+    
   </div>
   );
 }

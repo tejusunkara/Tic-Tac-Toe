@@ -10,60 +10,106 @@ export function Board(props) {
 
   const [board, setBoard] = useState([]);
   const [turn, setTurn] = useState(0);
-  const [xPlays, setPlay] = useState(true); //to check is player X is next; set to true bc X is starting player
+  const [xPlays, setPlay] = useState(true); //to check if player X is next; set to true bc X is starting player
   const [gameOver, setGameOver] = useState(false); //if game has reached the end
-  var winnerStatus = '';
-  var winnerName = '';
-  var playerX = '';
-  var playerO = '';
-  var username = '';
+  const [winnerMessage, setWinnerMessage] = useState('');
+  const spectatorList = props.Spectators;
+  const playerX = props.PlayerX;
+  const playerO = props.PlayerO;
+  var username = props.username;
 
   function onClick(boxNumber) {
-    username = props.username; //current user
-    playerX = props.PlayerX; //player X
-    playerO = props.PlayerO; //player O
-    var isUser = (username == playerX || username == playerO);
-    // console.log(xPlays ? "X is next" : "O is next");
-    // console.log('Current user is ' + username);
-    // console.log('user is player X or player O ' + isUser);
+    var isPlayer = (username == playerX || username == playerO);
+    console.log('player O in onClick1: ' + playerO);
+    console.log('player X in onClick1: ' + playerX);
 
-    if (isUser && turn < 9) { //if current user is playerX or playerO
-      if (xPlays && (username == playerX)) {
-        //if next player is X and current user is playerX, print X in cell
-        console.log('X plays, username is = playerX');
+    if ((isPlayer) && (turn < 9)) {
+      if ((xPlays) && (username == playerX)) { //if next player is X and current user is playerX, print X in cell
         board[boxNumber] = "X";
         setBoard(board);
         setTurn(turn + 1); //increment turn and set xPlays only when the right player plays
         setPlay(!xPlays);
-        socket.emit('board', { 'board': board, 'cell': boxNumber, 'xPlays': xPlays, 'turn': turn, 'gameOver': gameOver, 'winnerStatus': winnerStatus }); //emits only is playerX or playerO clicks the board
+        socket.emit('board', { board: board, cell: boxNumber, xPlays: xPlays, turn: turn, gameOver: gameOver, winnerMessage: winnerMessage, playerX: playerX, playerO: playerO }); //emits only if playerX clicks the board
       }
-      else if (!xPlays && (username == playerO)) {
-        //if next player is O and current user is playerO, print O in cell
-        console.log('O plays, username is = playerO');
+      else if ((!xPlays) && (username == playerO)) { //if next player is O and current user is playerO, print O in cell
         board[boxNumber] = "O";
         setBoard(board);
         setTurn(turn + 1); //increment turn and set xPlays only when the right player plays
         setPlay(!xPlays);
-        socket.emit('board', { 'board': board, 'cell': boxNumber, 'xPlays': xPlays, 'turn': turn, 'gameOver': gameOver, 'winnerStatus': winnerStatus }); //emits only is playerX or playerO clicks the board
+        socket.emit('board', { board: board, cell: boxNumber, xPlays: xPlays, turn: turn, gameOver: gameOver, winnerMessage: winnerMessage, playerX: playerX, playerO: playerO }); //emits only if playerO clicks the board
       }
-
-      console.log('board at turn ' + turn + ': ' + board);
+      // socket.emit('board', { board: board, cell: boxNumber, xPlays: xPlays, turn: turn, gameOver: gameOver, winnerMessage: winnerMessage, playerX: playerX, playerO: playerO });
     }
-    else if (!isUser) { //when spectator tries to click
-      console.log('user is a spectator => cannot click');
-    }
-    else if (isUser && turn > 8) { //when players tries to click after turns are over
-      console.log('no more turns');
-    }
-
-    if (turn == 8) { //once the board is filled, set game to finished
+    else if ((turn >= 8) && (!calculateWinner(board)) && (isPlayer)) { //if there is no winner
       setGameOver(true);
-      console.log(gameOver)
-      winnerName = calculateWinner(board);
-      winnerStatus = 'Winner is ' + winnerName + '!';
-      socket.emit('board', { 'board': board, 'cell': boxNumber, 'xPlays': xPlays, 'turn': turn, 'gameOver': gameOver, 'winnerStatus': winnerStatus });
+      setWinnerMessage('No winner :(');
+      console.log('no winner');
+      socket.emit('board', { board: board, cell: boxNumber, xPlays: xPlays, turn: turn, gameOver: gameOver, winnerMessage: winnerMessage, playerX: playerX, playerO: playerO });
     }
+
+    if (calculateWinner(board)) { //if there is a winner, get game to finished, set winner name to winner, and emit
+      setGameOver(true);
+      const winner = ((calculateWinner(board) == "X") ? playerX : playerO);
+      setWinnerMessage('Winner is ' + winner + '!');
+      console.log('HERE in onClick ' + gameOver);
+      console.log(winner);
+      console.log(winnerMessage);
+      socket.emit('board', { board: board, cell: boxNumber, xPlays: xPlays, turn: turn, gameOver: gameOver, winnerMessage: winnerMessage, playerX: playerX, playerO: playerO });
+    }
+    console.log('board at turn ' + turn + ': ' + board);
+    console.log('player O in onClick2: ' + playerO);
+    console.log('player X in onClick2: ' + playerX);
   }
+
+  useEffect(() => { //updating board
+    socket.on('board', (data) => {
+      console.log('Board was clicked');
+      setBoard(data.board);
+      setTurn(data.turn + 1);
+      setPlay(!data.xPlays);
+      if (calculateWinner(data.board)) { //if there is a winner, output winner message
+        const winner = ((calculateWinner(data.board) == "X") ? data.playerX : data.playerO);
+        setWinnerMessage('Winner is ' + winner + '!');
+        setGameOver(true);
+      }
+      else if (data.turn >= 8 && !calculateWinner(data.board)) { //if there is no winner
+        setWinnerMessage('No winner :(');
+        setGameOver(true);
+      }
+      else {
+        setWinnerMessage(data.winnerMessage);
+        setGameOver(data.gameOver);
+      }
+      console.log(data);
+      console.log('player X in useEffect: ' + data.playerX);
+      console.log('player O in useEffect: ' + data.playerO);
+    });
+  }, []);
+
+  function onClickReplay() { //When the game ends, Player X and Player O will have the option to click a button to play again
+    console.log('play again');
+    //set all states to initial values
+    setBoard(['', '', '', '', '', '', '', '', ]);
+    setTurn(0);
+    setPlay(true);
+    setGameOver(false);
+    setWinnerMessage('');
+    socket.emit('playAgain', { board: board, cell: null, xPlays: xPlays, turn: turn, gameOver: gameOver, winnerMessage: winnerMessage, playerX: playerX, playerO: playerO });
+
+  }
+
+  useEffect(() => { //resetting board
+    socket.on('playAgain', (data) => {
+      setBoard(data.board);
+      setTurn(data.turn);
+      setPlay(data.xPlays);
+      setWinnerMessage(data.winnerMessage);
+      setGameOver(data.gameOver);
+      console.log('hello');
+      console.log(data);
+
+    });
+  }, []);
 
   function calculateWinner(squares) {
     const lines = [
@@ -85,33 +131,31 @@ export function Board(props) {
     return null;
   }
 
-  useEffect(() => {
-    // Listening for a chat event emitted by the server. If received, we
-    // run the code in the function that is passed in as the second arg
-    socket.on('board', (data) => {
-      console.log('Board was clicked');
-      console.log(data);
-      // If the server sends a message (on behalf of another client), then we
-      // add it to the list of messages to render it on the UI.
-      setBoard(data.board);
-      setPlay(!data.xPlays);
-      setTurn(data.turn + 1);
-      winnerStatus = data.winnerStatus;
-      if (turn == 8) {
-        setGameOver(!data.gameOver);
-      }
-      console.log(data.xPlays);
-      console.log(data.turn);
-      console.log(data.winnerStatus);
-    });
-  }, []);
+  const status = 'Next player: ' + (xPlays ? playerX : playerO);
 
-  const status = 'Next player: ' + (xPlays ? 'X' : 'O');
+  if (gameOver) { //display once winner is calculated
+    console.log(winnerMessage);
+    if (username == playerX || username == playerO) { //display play again button for player X and player O
+      return (
+        <div className="playerMessage">
+          <div>{ winnerMessage }</div>
+          <button class="replay" onClick={() => onClickReplay()} >Play Again</button>
+        </div>
+      );
+    }
+    else {
+      return (
+        <div className="spectatorMessage">
+          { winnerMessage }
+          <button class="nextGame" onClick={() => onClickReplay()} >View Next Game</button>
+        </div>
+      );
+    }
+  }
 
   return (
     <div>
       <div className="next">{ status }</div>
-      <div className="winner">{winnerStatus}</div>
       
       <div className="board">
         <Box onClick={() => onClick(0)} board={board[0]}/>
