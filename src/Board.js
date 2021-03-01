@@ -30,20 +30,22 @@ export function Board(props) {
         //if next player is X and current user is playerX, print X in cell
         console.log('X plays, username is = playerX');
         board[boxNumber] = "X";
+        setBoard(board);
         setTurn(turn + 1); //increment turn and set xPlays only when the right player plays
         setPlay(!xPlays);
+        socket.emit('board', { 'board': board, 'cell': boxNumber, 'xPlays': xPlays, 'turn': turn }); //emits only is playerX or playerO clicks the board
       }
       else if (!xPlays && (username == playerO)) {
         //if next player is O and current user is playerO, print O in cell
         console.log('O plays, username is = playerO');
         board[boxNumber] = "O";
+        setBoard(board);
         setTurn(turn + 1); //increment turn and set xPlays only when the right player plays
         setPlay(!xPlays);
+        socket.emit('board', { 'board': board, 'cell': boxNumber, 'xPlays': xPlays, 'turn': turn }); //emits only is playerX or playerO clicks the board
       }
 
-      setBoard(board);
       console.log('board at turn ' + turn + ': ' + board);
-      socket.emit('board', { 'board': board, 'cell': boxNumber, 'xPlays': xPlays, 'turn': turn }); //emits only is playerX or playerO clicks the board
     }
     else {
       console.log('board at turn ' + turn + ': ' + board);
@@ -61,9 +63,9 @@ export function Board(props) {
       // add it to the list of messages to render it on the UI.
       setBoard(data.board);
       setPlay(!data.xPlays);
-      console.log(xPlays);
+      console.log(data.xPlays);
       setTurn(data.turn + 1);
-      console.log(turn);
+      console.log(data.turn);
     });
   }, []);
 
