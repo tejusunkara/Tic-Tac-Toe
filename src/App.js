@@ -1,6 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import { Board } from './Board.js';
+import { Greeting } from './Greeting.js';
 import './Board.css';
 import io from 'socket.io-client';
 import { useState, useEffect, useRef } from 'react';
@@ -35,25 +36,7 @@ function App(props) {
 
   if (isLoggedIn) { //display once logged in
     return (
-      <div className="greeting">
-        <div className="tictac">
-          <h1>My Tic Tac Toe Board</h1>
-          {<Board PlayerX={userList[0]} PlayerO={userList[1]} Spectators={userList.slice(2)} username={username}/>}
-        </div>
-        <div className="userslist">
-          <ul>
-            Player X: {userList[0]}
-          </ul>
-          <ul>
-            Player O: {userList[1]}
-          </ul>
-          <ul>
-            Spectators: {userList.slice(2).map(spectator => (
-              <li>{spectator}</li>
-            ))}
-          </ul>
-        </div>
-      </div>
+      <Greeting PlayerX={userList[0]} PlayerO={userList[1]} Spectators={userList.slice(2)} username={username}/>
     );
   }
 

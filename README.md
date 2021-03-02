@@ -22,3 +22,25 @@
 2. Run command in another terminal, `cd` into the project directory, and run `npm run start`
 3. Preview web page in browser '/'
 
+### Known Problems and Technical Issues
+
+#### Known Problems:
+1. Application does not check if the entered username is unique and/or if it has already been entered.
+
+..I would address this by going over my socket.io emits and retracing my code. I believe my clients are not communicating with my server and I would like to make 
+...sure that this is not th issue. Once I resolved this, I would like to add a feature which will bring the user to a different login screen. I would do so by first checking if 
+...the user's username is in my in my list of users in the `onClick` event of the login button. If it is, I would emit an event and send data similar to my other login emit.
+...Then I will use `useEffect()` to re-render.
+
+2. `Player Again` button can't be clicked by both players to play again. Player X must click `Play Again` and perform their first click in order to properly play a game.
+
+...I would solve this issue going through my logic for the `onClick` event of the `Play Again` button. Once this is solved, I would like to look into how I can implement a `Logout` button.
+
+
+#### Technical Issues:
+1. In `Board.js`, `playerO` is undefined on Player X's client, but not on other clients
+
+...I fixed this issue by passing `playerO` and `playerX` in each `board` emit. I understood that if I passed it through each emit, it would re-render to `playerX` being Player X's username.
+...I confirmed this worked by writing a series of `console.log` statements. Application was also printing `playerO` correctly on its side.
+
+2. I did not experience any other issues.
