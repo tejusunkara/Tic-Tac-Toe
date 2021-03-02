@@ -48,7 +48,6 @@ def on_playAgain(data):
 def on_login(data):
     print('logged in')
     print(data)
-    
     socketio.emit('login',  data, broadcast=True, include_self=False)
 
 # @socketio.on('logout')

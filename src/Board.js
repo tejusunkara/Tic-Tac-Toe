@@ -105,6 +105,12 @@ export function Board(props) {
 
     });
   }, []);
+  
+  console.log(board);
+  console.log(turn);
+  console.log(xPlays);
+  console.log(winnerMessage);
+  console.log(gameOver);
 
   function calculateWinner(squares) {
     const lines = [
