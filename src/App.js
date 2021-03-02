@@ -25,10 +25,11 @@ function App(props) {
     setLogin(true);
   }
 
+  console.log(userList);
   useEffect(() => { //getting back user data from server
     socket.on('login', (data) => {
       console.log(data.username + ' logged in');
-      setUserList(prevList => [...prevList, data.username]);
+      setUserList([...data.userList, data.username]);
     });
   }, []);
 
@@ -39,31 +40,34 @@ function App(props) {
           <h1>My Tic Tac Toe Board</h1>
           {<Board PlayerX={userList[0]} PlayerO={userList[1]} Spectators={userList.slice(2)} username={username}/>}
         </div>
-        <ul>
-          Player X: {userList[0]}
-        </ul>
-        <ul>
-          Player O: {userList[1]}
-        </ul>
-        <ul>
-          Spectators: {userList.slice(2).map(spectator => (
-            <li>{spectator}</li>
-          ))}
-        </ul>
+        <div className="userslist">
+          <ul>
+            Player X: {userList[0]}
+          </ul>
+          <ul>
+            Player O: {userList[1]}
+          </ul>
+          <ul>
+            Spectators: {userList.slice(2).map(spectator => (
+              <li>{spectator}</li>
+            ))}
+          </ul>
+        </div>
       </div>
     );
   }
 
   return (
     <div>
-    <div className="loggingIn">
-      <h1>Please login</h1>
-      <label for="username">Username: </label>
-      <input ref={inputRef} type="text"  />
-      <button className="loginbtn" onClick={() => onClickButton()} >Login</button>
+      <div className="loggingIn">
+        <h1>Please login</h1>
+        <form>
+          <label for="username">Username: </label>
+          <input ref={inputRef} type="text"  />
+          <button className="loginbtn" onClick={() => onClickButton()} type="submit">Login</button>
+        </form>
+      </div>
     </div>
-    
-  </div>
   );
 }
 

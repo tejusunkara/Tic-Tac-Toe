@@ -41,7 +41,7 @@ def on_board(data): # data is whatever arg you pass in your emit call on client
 
 @socketio.on('playAgain')
 def on_playAgain(data):
-    print('playAgain '+data)
+    print('playAgain '+str(data))
     socketio.emit('playAgain',  data, broadcast=True, include_self=False)
 
 @socketio.on('login')

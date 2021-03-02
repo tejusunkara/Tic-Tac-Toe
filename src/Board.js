@@ -20,10 +20,11 @@ export function Board(props) {
 
   function onClick(boxNumber) {
     var isPlayer = (username == playerX || username == playerO);
+    var boxFilled = (board[boxNumber] == 'X' || board[boxNumber] == 'O');
     console.log('player O in onClick1: ' + playerO);
     console.log('player X in onClick1: ' + playerX);
 
-    if ((isPlayer) && (turn < 9)) {
+    if ((isPlayer) && (turn < 9) && !boxFilled) { //if user who clicked in a player and there are turns left and the box isnt filled
       if ((xPlays) && (username == playerX)) { //if next player is X and current user is playerX, print X in cell
         board[boxNumber] = "X";
         setBoard(board);
@@ -38,7 +39,6 @@ export function Board(props) {
         setPlay(!xPlays);
         socket.emit('board', { board: board, cell: boxNumber, xPlays: xPlays, turn: turn, gameOver: gameOver, winnerMessage: winnerMessage, playerX: playerX, playerO: playerO }); //emits only if playerO clicks the board
       }
-      // socket.emit('board', { board: board, cell: boxNumber, xPlays: xPlays, turn: turn, gameOver: gameOver, winnerMessage: winnerMessage, playerX: playerX, playerO: playerO });
     }
     else if ((turn >= 8) && (!calculateWinner(board)) && (isPlayer)) { //if there is no winner
       setGameOver(true);
@@ -46,19 +46,12 @@ export function Board(props) {
       console.log('no winner');
       socket.emit('board', { board: board, cell: boxNumber, xPlays: xPlays, turn: turn, gameOver: gameOver, winnerMessage: winnerMessage, playerX: playerX, playerO: playerO });
     }
-
     if (calculateWinner(board)) { //if there is a winner, get game to finished, set winner name to winner, and emit
       setGameOver(true);
       const winner = ((calculateWinner(board) == "X") ? playerX : playerO);
       setWinnerMessage('Winner is ' + winner + '!');
-      console.log('HERE in onClick ' + gameOver);
-      console.log(winner);
-      console.log(winnerMessage);
       socket.emit('board', { board: board, cell: boxNumber, xPlays: xPlays, turn: turn, gameOver: gameOver, winnerMessage: winnerMessage, playerX: playerX, playerO: playerO });
     }
-    console.log('board at turn ' + turn + ': ' + board);
-    console.log('player O in onClick2: ' + playerO);
-    console.log('player X in onClick2: ' + playerX);
   }
 
   useEffect(() => { //updating board
@@ -81,21 +74,23 @@ export function Board(props) {
         setGameOver(data.gameOver);
       }
       console.log(data);
-      console.log('player X in useEffect: ' + data.playerX);
-      console.log('player O in useEffect: ' + data.playerO);
     });
   }, []);
 
   function onClickReplay() { //When the game ends, Player X and Player O will have the option to click a button to play again
     console.log('play again');
     //set all states to initial values
-    setBoard(['', '', '', '', '', '', '', '', ]);
+    setBoard(['', '', '', '', '', '', '', '']);
     setTurn(0);
     setPlay(true);
     setGameOver(false);
     setWinnerMessage('');
-    socket.emit('playAgain', { board: board, cell: null, xPlays: xPlays, turn: turn, gameOver: gameOver, winnerMessage: winnerMessage, playerX: playerX, playerO: playerO });
-
+    console.log('clickReplay:')
+    console.log(board)
+    console.log(xPlays)
+    console.log(gameOver)
+    console.log(winnerMessage)
+    socket.emit('playAgain', { board: board, cell: null, xPlays: xPlays, turn: turn, gameOver: gameOver, winnerMessage: winnerMessage, playerX: playerX, playerO: playerO })
   }
 
   useEffect(() => { //resetting board
@@ -146,8 +141,7 @@ export function Board(props) {
     else {
       return (
         <div className="spectatorMessage">
-          { winnerMessage }
-          <button class="nextGame" onClick={() => onClickReplay()} >View Next Game</button>
+          <div>{ winnerMessage }</div>
         </div>
       );
     }
