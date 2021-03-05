@@ -21,7 +21,7 @@ function App(props) {
       const user = inputRef.current.value; //user is set to the input value
       setUsername(user);
       setUserList(prevList => [...prevList, user]); //updating userList by adding user
-      socket.emit('login', { userList: userList, username: user }); //emitting to the server
+      socket.emit('login', { userList: userList, username: user, }); //emitting to the server
     }
     setLogin(true);
   }
