@@ -6,6 +6,8 @@ from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv, find_dotenv
 
+load_dotenv(find_dotenv()) # This is to load your env variables from .env
+
 app = Flask(__name__, static_folder='./build/static')
 
 # Point SQLAlchemy to your Heroku database
@@ -50,7 +52,7 @@ def on_login(data):
     print('logged in')
     print(data)
     
-    player = models.Player.filter_by(username=data['username'])
+    player = models.Player.query.filter(models.Player.username==data['username']).first()
     if player == None:  #if there is no player with this username in the database
         new_player = models.Player(username=data['username'], rank=100)
         db.session.add(new_player)

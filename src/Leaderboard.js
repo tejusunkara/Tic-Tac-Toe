@@ -6,14 +6,19 @@ const socket = io();
 export function Leaderboard(props) {
 
     const [showRanks, setShowRanks] = useState(false); //to show leaderboard or not
-    const [usernames, setUsernames] = useState([]);
+    const [usernames, setUsernames] = useState([props.PlayerX, props.PlayerO, props.Spectators]);
     const [ranks, setRanks] = useState([]);
-    const spectators = props.Spectators;
 
     function showLeaderboard() { //display all players and their ranking
         console.log('showLeaderboard');
+        const newUsernames = [...usernames];
         setShowRanks(true);
-        socket.emit('leaderboard', { users: usernames, rankings: ranks })
+        if(!newUsernames.includes(props.username)) {
+            newUsernames = [...newUsernames, props.username];
+        }
+        setUsernames(newUsernames);
+        setRanks(ranks);
+        socket.emit('leaderboard', { users: usernames, rankings: ranks });
     }
 
     useEffect(() => {
@@ -38,13 +43,13 @@ export function Leaderboard(props) {
                         <th>Ranking</th>
                     </tr>
                     <tr>
-                        {usernames.map(user => (
+                        <th>{usernames.map(user => (
                             <td>{user}</td>
-                        ))}
+                        ))}</th>
                         
-                        {ranks.map(rank => (
-                            <td>{ranks}</td>
-                        ))}
+                        <th>{ranks.map(rank => (
+                            <td>{rank}</td>
+                        ))}</th>
                     </tr>
                 </table>
                 <button className="btnLeaderboard" onClick={() => hideLeaderboard()} type="button">Hide Leaderboard</button>

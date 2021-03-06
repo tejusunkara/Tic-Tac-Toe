@@ -28,6 +28,11 @@ mark {
 	color: black;
 }
 
+table,
+td {
+    border: 1px solid #333;
+}
+
 .board {
 	margin: auto;
 	width: 300px;

@@ -50,7 +50,7 @@ function App(props) {
 
   if (isLoggedIn) { //display once logged in
     return (
-      <LoginDisplay PlayerX={userList.X} PlayerO={userList.O} Spectators={userList.Spectators} username={username}/>
+      <LoginDisplay PlayerX={userList.X} PlayerO={userList.O} Spectators={userList.Spectators} username={username} userList={userList}/>
     );
   }
 

@@ -26,7 +26,7 @@ export function LoginDisplay(props) {
           </ol>
         </div>
         <div className="leaderboard">
-          <Leaderboard PlayerX={props.PlayerX} PlayerO={props.PlayerO} Spectators={props.Spectators} username={props.username}/>
+          <Leaderboard PlayerX={props.PlayerX} PlayerO={props.PlayerO} Spectators={props.Spectators} username={props.username} />
         </div>
       </div>
     );
@@ -52,7 +52,7 @@ export function LoginDisplay(props) {
           </ol>
         </div>
         <div className="leaderboard">
-          <Leaderboard PlayerX={props.PlayerX} PlayerO={props.PlayerO} Spectators={props.Spectators} username={props.username}/>
+          <Leaderboard PlayerX={props.PlayerX} PlayerO={props.PlayerO} Spectators={props.Spectators} username={props.username} />
         </div>
       </div>
     );
@@ -78,7 +78,7 @@ export function LoginDisplay(props) {
           </ol>
         </div>
         <div className="leaderboard">
-          <Leaderboard PlayerX={props.PlayerX} PlayerO={props.PlayerO} Spectators={props.Spectators} username={props.username}/>
+          <Leaderboard PlayerX={props.PlayerX} PlayerO={props.PlayerO} Spectators={props.Spectators} username={props.username} />
         </div>
       </div>
     );
@@ -105,7 +105,7 @@ export function LoginDisplay(props) {
           </ol>
         </div>
         <div className="leaderboard">
-          <Leaderboard PlayerX={props.PlayerX} PlayerO={props.PlayerO} Spectators={props.Spectators} username={props.username}/>
+          <Leaderboard PlayerX={props.PlayerX} PlayerO={props.PlayerO} Spectators={props.Spectators} username={props.username} />
         </div>
       </div>
     );
