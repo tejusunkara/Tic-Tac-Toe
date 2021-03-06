@@ -3,7 +3,7 @@ import './App.css';
 import { LoginDisplay } from './LoginDisplay.js';
 import './Board.css';
 import io from 'socket.io-client';
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 
 const socket = io();

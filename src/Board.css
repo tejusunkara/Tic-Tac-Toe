@@ -9,7 +9,8 @@ h1 {
 }
 
 h3 {
-	color: red;
+	color: black;
+	background-color: red;
 	text-align: center;
 }
 
@@ -20,6 +21,11 @@ label {
 
 div {
 	text-align: center;
+}
+
+mark {
+	background-color: red;
+	color: black;
 }
 
 .board {
@@ -48,7 +54,7 @@ div {
 }
 
 .loggingIn {
-	
+
 	text-align: center;
 	color: white;
 	font-family: 'Trocchi', serif;
@@ -119,4 +125,22 @@ div {
 
 .spectatorMessage {
 	text-align: center;
+}
+
+.btnLeaderboard {
+	text-align: center;
+	padding: 10px 50px;
+	font-size: 16px;
+	font-family: 'Lato', sans-serif;
+}
+
+.leaderTable {
+	display: grid;
+	text-align: left;
+	padding: 10px 24px;
+}
+
+.ownUser {
+	text-align: left;
+	padding: 10px 24px;
 }

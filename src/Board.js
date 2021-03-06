@@ -16,7 +16,7 @@ export function Board(props) {
   const playerO = props.PlayerO;
   var username = props.username;
 
-  function onClick(boxNumber) {
+  function upgradeBoard(boxNumber) {
     var isPlayer = (username == playerX || username == playerO);
     const newBoard = [...board];
     var boxFilled = (newBoard[boxNumber] == 'X' || newBoard[boxNumber] == 'O');
@@ -138,15 +138,15 @@ export function Board(props) {
       <div className="next">{ status }</div>
       
       <div className="board">
-        <Box onClick={() => onClick(0)} board={board[0]}/>
-        <Box onClick={() => onClick(1)} board={board[1]}/>
-        <Box onClick={() => onClick(2)} board={board[2]}/>
-        <Box onClick={() => onClick(3)} board={board[3]}/>
-        <Box onClick={() => onClick(4)} board={board[4]}/>
-        <Box onClick={() => onClick(5)} board={board[5]}/>
-        <Box onClick={() => onClick(6)} board={board[6]}/>
-        <Box onClick={() => onClick(7)} board={board[7]}/>
-        <Box onClick={() => onClick(8)} board={board[8]}/>
+        <Box onClick={() => upgradeBoard(0)} board={board[0]}/>
+        <Box onClick={() => upgradeBoard(1)} board={board[1]}/>
+        <Box onClick={() => upgradeBoard(2)} board={board[2]}/>
+        <Box onClick={() => upgradeBoard(3)} board={board[3]}/>
+        <Box onClick={() => upgradeBoard(4)} board={board[4]}/>
+        <Box onClick={() => upgradeBoard(5)} board={board[5]}/>
+        <Box onClick={() => upgradeBoard(6)} board={board[6]}/>
+        <Box onClick={() => upgradeBoard(7)} board={board[7]}/>
+        <Box onClick={() => upgradeBoard(8)} board={board[8]}/>
       </div>
       
     </div>
