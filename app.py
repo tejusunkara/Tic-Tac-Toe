@@ -30,32 +30,26 @@ def on_connect():
 def on_disconnect():
     print('User disconnected!')
 
-# When a client emits the event 'boars' to the server, this function is run
-# 'board' is a custom event name that we just decided
-@socketio.on('board')
-def on_board(data): # data is whatever arg you pass in your emit call on client
-    print(data)
-    # This emits the 'chat' event from the server to all clients except for
-    # the client that emmitted the event that triggered this function
-    socketio.emit('board',  data, broadcast=True, include_self=False)
-
-@socketio.on('playAgain')
-def on_playAgain(data):
-    print('playAgain '+str(data))
-    socketio.emit('playAgain',  data, broadcast=True, include_self=False)
-
 @socketio.on('login')
 def on_login(data):
     print('logged in')
     print(data)
-    socketio.emit('login',  data, broadcast=True, include_self=False)
+    socketio.emit('login', data, broadcast=True, include_self=True)
+    
+# When a client emits the event 'onClickBoard' to the server, this function is run
+# 'onClickBoard' is a custom event name that we just decided
+@socketio.on('board')
+def on_board(data): # data is whatever arg you pass in your emit call on client
+    print(data)
+    # This emits the 'onClickBoard' event from the server to all clients except for
+    # the client that emmitted the event that triggered this function
+    socketio.emit('onClickBoard', data, broadcast=True, include_self=True)
 
-# @socketio.on('logout')
-# def on_logout(data):
-#     print('log out')
-#     socketio.emit('logout', data, broadcast=True, include_self=False)
+@socketio.on('restart')
+def on_restart(data):
+    print('restart '+str(data))
+    socketio.emit('restart', data, broadcast=True, include_self=False)
 
-# Note that we don't call app.run anymore. We call socketio.run with app arg
 socketio.run(
     app,
     host=os.getenv('IP', '0.0.0.0'),

@@ -1,8 +1,11 @@
 import React from 'react';
 import { Board } from './Board.js';
 
-export function Greeting(props) {
+export function LoginDisplay(props) {
     const spectators = props.Spectators;
+    console.log(props.PlayerX);
+    console.log(props.PlayerO);
+    console.log(spectators);
     return (
         <div className="greeting">
             <div className="tictac">
@@ -16,11 +19,11 @@ export function Greeting(props) {
               <ul>
                 Player O: {props.PlayerO}
               </ul>
-              <ul>
+              <ol>
                 Spectators: {spectators.map(spectator => (
                   <li>{spectator}</li>
                 ))}
-              </ul>
+              </ol>
             </div>
       </div>
     );
