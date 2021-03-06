@@ -1,6 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import { LoginDisplay } from './LoginDisplay.js';
+import { Leaderboard } from './Leaderboard.js';
 import './Board.css';
 import io from 'socket.io-client';
 import React, { useState, useEffect, useRef } from 'react';
@@ -13,6 +14,8 @@ function App(props) {
   const [isLoggedIn, setLogin] = useState(false); //boolean value if user is logged in
   const inputRef = useRef(null); //for username input
   const [username, setUsername] = useState(""); //username of current user
+  var ranks = [];
+  var users = []
 
   function onClickLogin(user) { //user: user input from the text box
     //once user is 'logged in', emit message with user's username & number of users
@@ -44,13 +47,20 @@ function App(props) {
     socket.on('login', (data) => {
       console.log(data.username + ' logged in');
       setUserList(data.newUsers);
+      ranks = [...data.ranks];
+      users = [...data.users];
       console.log(data);
     });
   }, []);
 
   if (isLoggedIn) { //display once logged in
     return (
-      <LoginDisplay PlayerX={userList.X} PlayerO={userList.O} Spectators={userList.Spectators} username={username} userList={userList}/>
+      <div>
+        <LoginDisplay PlayerX={userList.X} PlayerO={userList.O} Spectators={userList.Spectators} username={username} />
+        <div className="leaderboard">
+            <Leaderboard ranks={ranks} players={users}/>
+        </div>
+      </div>
     );
   }
 

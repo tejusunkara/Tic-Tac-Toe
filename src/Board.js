@@ -16,7 +16,7 @@ export function Board(props) {
   const playerO = props.PlayerO;
   var username = props.username;
 
-  function upgradeBoard(boxNumber) {
+  function updateBoard(boxNumber) {
     var isPlayer = (username == playerX || username == playerO);
     const newBoard = [...board];
     var boxFilled = (newBoard[boxNumber] == 'X' || newBoard[boxNumber] == 'O');
@@ -54,6 +54,18 @@ export function Board(props) {
       }
       setGameOver(true);
       setWinnerMessage(winner);
+      let result = '';
+      if (winner.includes(username)) { //if winner message has client's name, client won
+        result = 'won';
+      }
+      else if (winner === 'No winner :(') { //if no winner, draw
+        result = 'draw';
+      }
+      else { //if winner message doesn't have client's name and its not a draw, client lost
+        result = 'lost';
+      }
+
+      socket.emit('winner', { winner: result, username: username }); //emit an event telling the server whether that client’s username won or lost
       socket.emit('board', { updateBoard: newBoard, cell: boxNumber, xPlaysNext: xPlaysNext, gameOver: !gameOver, winnerMessage: winner });
     }
   }
@@ -138,15 +150,15 @@ export function Board(props) {
       <div className="next">{ status }</div>
       
       <div className="board">
-        <Box onClick={() => upgradeBoard(0)} board={board[0]}/>
-        <Box onClick={() => upgradeBoard(1)} board={board[1]}/>
-        <Box onClick={() => upgradeBoard(2)} board={board[2]}/>
-        <Box onClick={() => upgradeBoard(3)} board={board[3]}/>
-        <Box onClick={() => upgradeBoard(4)} board={board[4]}/>
-        <Box onClick={() => upgradeBoard(5)} board={board[5]}/>
-        <Box onClick={() => upgradeBoard(6)} board={board[6]}/>
-        <Box onClick={() => upgradeBoard(7)} board={board[7]}/>
-        <Box onClick={() => upgradeBoard(8)} board={board[8]}/>
+        <Box onClick={() => updateBoard(0)} board={board[0]}/>
+        <Box onClick={() => updateBoard(1)} board={board[1]}/>
+        <Box onClick={() => updateBoard(2)} board={board[2]}/>
+        <Box onClick={() => updateBoard(3)} board={board[3]}/>
+        <Box onClick={() => updateBoard(4)} board={board[4]}/>
+        <Box onClick={() => updateBoard(5)} board={board[5]}/>
+        <Box onClick={() => updateBoard(6)} board={board[6]}/>
+        <Box onClick={() => updateBoard(7)} board={board[7]}/>
+        <Box onClick={() => updateBoard(8)} board={board[8]}/>
       </div>
       
     </div>

@@ -6,25 +6,20 @@ const socket = io();
 export function Leaderboard(props) {
 
     const [showRanks, setShowRanks] = useState(false); //to show leaderboard or not
-    const [usernames, setUsernames] = useState([props.PlayerX, props.PlayerO, props.Spectators]);
-    const [ranks, setRanks] = useState([]);
+    const [usernames, setUsernames] = useState(props.players);
+    const [ranks, setRanks] = useState(props.ranks);
 
     function showLeaderboard() { //display all players and their ranking
         console.log('showLeaderboard');
-        const newUsernames = [...usernames];
         setShowRanks(true);
-        if(!newUsernames.includes(props.username)) {
-            newUsernames = [...newUsernames, props.username];
-        }
-        setUsernames(newUsernames);
-        setRanks(ranks);
         socket.emit('leaderboard', { users: usernames, rankings: ranks });
     }
 
     useEffect(() => {
         socket.on('leaderboard', (data) => {
+            console.log(data);
             setUsernames(data.users);
-            setRanks(data.ranks);
+            setRanks(data.rankings);
         });
     }, []);
 
@@ -43,14 +38,20 @@ export function Leaderboard(props) {
                         <th>Ranking</th>
                     </tr>
                     <tr>
-                        <th>{usernames.map(user => (
-                            <td>{user}</td>
-                        ))}</th>
-                        
-                        <th>{ranks.map(rank => (
-                            <td>{rank}</td>
-                        ))}</th>
+                        <tr>
+                            {usernames.map(user => (
+                                <td>{user}</td>
+                            ))}
+                        </tr>
                     </tr>
+                    <tr>
+                        <tr>
+                            {ranks.map(rank => (
+                                <td>{rank}</td>
+                            ))}
+                        </tr>
+                    </tr>
+                    
                 </table>
                 <button className="btnLeaderboard" onClick={() => hideLeaderboard()} type="button">Hide Leaderboard</button>
             </div>

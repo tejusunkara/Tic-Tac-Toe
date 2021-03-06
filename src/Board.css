@@ -28,9 +28,12 @@ mark {
 	color: black;
 }
 
-table,
-td {
-    border: 1px solid #333;
+table {
+    border: 1px solid black;
+}
+
+th, td, tr {
+  border: 1px solid black;
 }
 
 .board {

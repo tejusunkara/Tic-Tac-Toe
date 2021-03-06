@@ -22,6 +22,11 @@ db = SQLAlchemy(app)
 import models 
 db.create_all()
 
+global users
+users=[]
+global ranks
+rankings = []
+
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
 socketio = SocketIO(
@@ -47,6 +52,14 @@ def on_connect():
 def on_disconnect():
     print('User disconnected!')
 
+def updateDB():
+    all_players = models.Player.query.order_by(models.Player.rank.desc()) #table should be ordered from highest to lowest score
+    for player in all_players:
+        users.append(player.username)
+        rankings.append(player.rank)
+        
+    
+
 @socketio.on('login')
 def on_login(data):
     print('logged in')
@@ -60,8 +73,14 @@ def on_login(data):
     
     all_players = models.Player.query.all()   #returns list of objects, each object is 1 player inside DB
     print(all_players)
+    for player in all_players:
+        users.append(player.username)
+        rankings.append(player.rank)
     
-    socketio.emit('login', data, broadcast=True, include_self=False)
+    print(users)
+    print(rankings)
+    
+    socketio.emit('login', { 'newUsers': data['newUsers'], 'username': data['username'], 'users': users, 'ranks': rankings }, broadcast=True, include_self=False)
     
 # When a client emits the event 'onClickBoard' to the server, this function is run
 # 'onClickBoard' is a custom event name that we just decided
@@ -70,24 +89,37 @@ def on_board(data): # data is whatever arg you pass in your emit call on client
     print(data)
     # This emits the 'onClickBoard' event from the server to all clients except for
     # the client that emmitted the event that triggered this function
+    for user in users:
+        if user in data['winnerMessage']:
+            player = models.Player.query.filter(models.Player.username==user).first()
+            player.rank = player.rank+1
     socketio.emit('board', data, broadcast=True, include_self=False)
 
 @socketio.on('leaderboard')
 def on_leaderboard(data): # updating leaderboard data
     print(data)
     
-    all_players = models.Player.query.order_by(models.Player.rank.desc()) #table should be ordered from highest to lowest score
-    users=[]
-    rankings=[]
-    for player in all_players:
-        users.append(player.username)
-        rankings.append(player.rank)
+    updateDB()
     
     print(users)
     print(rankings)
     # This emits the 'onClickBoard' event from the server to all clients except for
     # the client that emmitted the event that triggered this function
-    socketio.emit('leaderboard', {"users": users, "rankings": rankings}, broadcast=True, include_self=False)
+    socketio.emit('leaderboard', {"users": users, "rankings": rankings}, broadcast=True, include_self=True)
+
+@socketio.on('winner')
+def on_winner(data):    # update the ranking for that username in the DB based on the event data
+    print(data)
+    
+    player = models.Player.query.filter(models.Player.username==data['username']).first()
+    if data['result'] == 'won':
+        player.rank = player.rank+1
+    elif data['result'] == 'lost':
+        player.rank = player.rank-1
+    
+    updateDB()
+    
+    socketio.emit('leaderboard', {"users": users, "rankings": rankings}, broadcast=True, include_self=True)
 
 @socketio.on('restart')
 def on_restart(data):
