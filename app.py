@@ -34,7 +34,7 @@ def on_disconnect():
 def on_login(data):
     print('logged in')
     print(data)
-    socketio.emit('login', data, broadcast=True, include_self=True)
+    socketio.emit('login', data, broadcast=True, include_self=False)
     
 # When a client emits the event 'onClickBoard' to the server, this function is run
 # 'onClickBoard' is a custom event name that we just decided
@@ -43,7 +43,7 @@ def on_board(data): # data is whatever arg you pass in your emit call on client
     print(data)
     # This emits the 'onClickBoard' event from the server to all clients except for
     # the client that emmitted the event that triggered this function
-    socketio.emit('onClickBoard', data, broadcast=True, include_self=True)
+    socketio.emit('board', data, broadcast=True, include_self=False)
 
 @socketio.on('restart')
 def on_restart(data):
