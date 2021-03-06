@@ -4,8 +4,8 @@ import { Leaderboard } from './Leaderboard.js'
 
 export function LoginDisplay(props) {
   const spectators = props.Spectators;
-  
-  if( props.username == props.PlayerX) {
+
+  if (props.username == props.PlayerX) { //if user is player X
     return (
       <div className="greeting">
         <div className="tictac">
@@ -31,7 +31,7 @@ export function LoginDisplay(props) {
       </div>
     );
   }
-  else if( props.username == props.PlayerO) {
+  else if (props.username == props.PlayerO) { //if user is player X
     return (
       <div className="greeting">
         <div className="tictac">
@@ -57,9 +57,7 @@ export function LoginDisplay(props) {
       </div>
     );
   }
-  else if(spectators.includes(props.username)) {
-    console.log('user is spectator');
-    
+  else if (spectators.includes(props.username)) { //if user is a spectator
     return (
       <div className="greeting">
         <div className="tictac">
@@ -74,7 +72,7 @@ export function LoginDisplay(props) {
             Player O: {props.PlayerO}
           </ul>
           <ol>
-            Spectators: {spectators.map(spectator => (
+            Spectators: {spectators.map(spectator => (  //if username matches spectator
               (props.username == spectator) ? <li><mark>{spectator}</mark></li> : <li>{spectator}</li>
             ))}
           </ol>
@@ -85,8 +83,8 @@ export function LoginDisplay(props) {
       </div>
     );
   }
-  
-  else{
+
+  else {
     return (
       <div className="greeting">
         <div className="tictac">
