@@ -29,13 +29,23 @@ mark {
 }
 
 table {
-	border: 1px solid black;
+	border-collapse: collapse;
+    letter-spacing: 1px;
+    font: 16px "Open Sans", Helvetica, Arial, sans-serif;
+    border-spacing: 0;
+    margin-left: auto;
 }
 
-th,
+th,td {
+	border: 2.5px solid black;
+}
+th {
+	font-size: 18px;
+}
 td,
-tr {
-	border: 1px solid black;
+th, tr {
+    margin-right: auto;
+    padding: 1em;
 }
 
 .board {

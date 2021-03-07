@@ -50,13 +50,11 @@ export function Leaderboard(props) {
                 <table className="leaderTable">
                     <colgroup  span="2"></colgroup>
                     <tr>
-                        <th>Users</th>
-                        <th>Rank</th>
+                        <th> User </th>
+                        <th> Rank </th>
                     </tr>
                     <tr>
-                        <td>
-                            {renderTable}
-                        </td>
+                        <td>{renderTable}</td>
                     </tr>
                 </table>
                 <button className="btnLeaderboard" onClick={() => hideLeaderboard()} type="button">Hide Leaderboard</button>
