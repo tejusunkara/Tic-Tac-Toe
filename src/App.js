@@ -40,7 +40,7 @@ function App(props) {
     setLogin(true); //not emitted bc only current client is logged it, not the rest
     setUserList({ ...newList });
   }
-  
+
   var ranks = [];
   var users = [];
 
@@ -61,7 +61,7 @@ function App(props) {
       <div>
         <LoginDisplay PlayerX={userList.X} PlayerO={userList.O} Spectators={userList.Spectators} username={username} />
         <div className="leaderboard">
-            <Leaderboard ranks={ranks} players={users}/>
+            <Leaderboard ranks={ranks} players={users} currUser={username}/>
         </div>
       </div>
     );

@@ -40,36 +40,43 @@ export function Board(props) {
     }
     if (!newBoard.includes(null) || calculateWinner(newBoard)) { //if there is a winner or if the board is full
       var winner;
+      let result = '';
+      let loser = '';
       if (calculateWinner(newBoard) == 'X') {
         console.log('winner is X');
         winner = 'Winner is ' + playerX + '!';
+        result = playerX;
+        loser = playerO;
       }
       else if (calculateWinner(newBoard) == 'O') {
         console.log('winner is O');
         winner = 'Winner is ' + playerO + '!';
+        result = playerO;
+        loser = playerX;
       }
       else {
         console.log('no winner');
         winner = 'No winner :(';
+        result = 'draw';
       }
       setGameOver(true);
       setWinnerMessage(winner);
 
-      let result = '';
-      if (winner.includes(username)) { //if winner message has client's name, client won
-        console.log('user won');
-        result = 'won';
-      }
-      else if (winner === 'No winner :(') { //if no winner, draw
-        console.log('draw');
-        result = 'draw';
-      }
-      else { //if winner message doesn't have client's name and its not a draw, client lost
-        console.log('user lost');
-        result = 'lost';
-      }
+      
+      // if (winner.includes(username)) { //if winner message has client's name, client won
+      //   console.log('user won');
+      //   result = 'won';
+      // }
+      // else if (winner === 'No winner :(') { //if no winner, draw
+      //   console.log('draw');
+      //   result = 'draw';
+      // }
+      // else { //if winner message doesn't have client's name and its not a draw, client lost
+      //   console.log('user lost');
+      //   result = 'lost';
+      // }
 
-      socket.emit('winner', { winner: result, username: username }); //emit an event telling the server whether that client’s username won or lost
+      socket.emit('winner', { winner: result, loser: loser }); //emit an event telling the server whether that client’s username won or lost
       socket.emit('board', { updateBoard: newBoard, cell: boxNumber, xPlaysNext: xPlaysNext, gameOver: !gameOver, winnerMessage: winner });
     }
   }

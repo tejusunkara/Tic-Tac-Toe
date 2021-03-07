@@ -8,12 +8,15 @@ export function Leaderboard(props) {
     const [showData, setShowData] = useState(false); //to show leaderboard or not
     const [usernames, setUsernames] = useState([]);
     const [ranks, setRanks] = useState([]);
-    
+    // const [currentUser, setCurrentUser] = useState([]);
+
     function showLeaderboard() { //display all players and their ranking
         console.log('showLeaderboard');
         setShowData(true);
         setUsernames(props.players);
         setRanks(props.ranks);
+        // setCurrentUser(props.currUser);
+        // console.log(currentUser);
         console.log(usernames);
         console.log(ranks);
         socket.emit('leaderboard', { users: usernames, rankings: ranks });
@@ -33,15 +36,26 @@ export function Leaderboard(props) {
         console.log('hideLeaderboard');
         setShowData(false);
     }
-    
+
     const renderTable = usernames.map((user, index) => {
         const score = ranks[index];
-        return (
-            <tr>
-                <td>{user}</td>
-                <td>{score}</td>
-            </tr>
-        );
+        if (user == props.currUser) {
+            return (
+                <tr>
+                    <td><mark>{user}</mark></td>
+                    <td><mark>{score}</mark></td>
+                </tr>
+            );
+        }
+        else {
+            return (
+                <tr>
+                    <td>{user}</td>
+                    <td>{score}</td>
+                </tr>
+            );
+        }
+
     });
 
     if (showData) { //show ranks of all players

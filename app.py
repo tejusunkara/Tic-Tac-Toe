@@ -123,13 +123,14 @@ def on_leaderboard(data): # updating leaderboard data
 def on_winner(data):    # update the ranking for that username in the DB based on the event data
     print(data)
     # models.Player.query.filter(models.Player.username==data['username']).first()
-    player = db.session.query(models.Player).filter(models.Player.username==data['username']).first()
-    if data['winner'] == 'won':
-        player.rank = player.rank+1
-    elif data['winner'] == 'lost':
-        player.rank = player.rank-1
-    db.session.commit()
-    print(str(player.rank))
+    if (data['winner'] != 'draw') and (data['loser'] != ''):
+        winner = db.session.query(models.Player).filter(models.Player.username==data['winner']).first()
+        loser = db.session.query(models.Player).filter(models.Player.username==data['loser']).first()
+        winner.rank = winner.rank+1
+        loser.rank = loser.rank-1
+        db.session.commit()
+    print(str(winner.rank))
+    print(str(loser.rank))
     
     all_players = db.session.query(models.Player).order_by(models.Player.rank.desc()) #table should be ordered from highest to lowest score
     # clearing arrays before populating them with correctly ordered data

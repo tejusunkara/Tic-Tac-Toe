@@ -30,22 +30,26 @@ mark {
 
 table {
 	border-collapse: collapse;
-    letter-spacing: 1px;
-    font: 16px "Open Sans", Helvetica, Arial, sans-serif;
-    border-spacing: 0;
-    margin-left: auto;
+	letter-spacing: 1px;
+	font: 16px "Open Sans", Helvetica, Arial, sans-serif;
+	border-spacing: 0;
+	margin-left: auto;
 }
 
-th,td {
+th,
+td {
 	border: 2.5px solid black;
 }
+
 th {
 	font-size: 18px;
 }
+
 td,
-th, tr {
-    margin-right: auto;
-    padding: 1em;
+th,
+tr {
+	margin-right: auto;
+	padding: 1em;
 }
 
 .board {
