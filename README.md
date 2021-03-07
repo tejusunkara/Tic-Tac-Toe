@@ -22,25 +22,30 @@
 2. Run command in another terminal, `cd` into the project directory, and run `npm run start`
 3. Preview web page in browser '/'
 
+### Create Database on Heroku and connect code
+1. Login and fill creds: `heroku login -i`
+2. Create a new Heroku app: `heroku create`
+3. Create a new remote DB on your Heroku app: `heroku addons:create heroku-postgresql:hobby-dev` (If that doesn't work, add a `-a {your-app-name}`
+4. See the config vars set by Heroku for you: `heroku config`. Copy paste the value for DATABASE_URL
+5. Set the value of `DATABASE_URL` as an environment variable by entering this in the terminal: `export DATABASE_URL='copy-paste-value-in-here'` or create a `.env` file in your current directory and set `DATABASE_URL`
+
 ### Known Problems and Technical Issues
 
 #### Known Problems:
-1. Application does not check if the entered username is unique and/or if it has already been entered.
+1. Leaderboard only updates once `Show Leaderboard` button is clicked.
 
-..I would address this by going over my socket.io emits and retracing my code. I believe my clients are not communicating with my server and I would like to make 
-...sure that this is not th issue. Once I resolved this, I would like to add a feature which will bring the user to a different login screen. I would do so by first checking if 
-...the user's username is in my in my list of users in the `onClick` event of the login button. If it is, I would emit an event and send data similar to my other login emit.
-...Then I will use `useEffect()` to re-render.
+I would revise my Leaderboard component and prompt for an update outside of the `showLeaderboard` function.
 
-2. `Player Again` button can't be clicked by both players to play again. Player X must click `Play Again` and perform their first click in order to properly play a game.
+2. Additional features I would implement:
 
-...I would solve this issue going through my logic for the `onClick` event of the `Play Again` button. Once this is solved, I would like to look into how I can implement a `Logout` button.
+If there was more time, I would implement a mechanism to show a history of moves. I would do so using an array to keep track of the moves made. If user wanted to go back a move, they could do so.
 
 
 #### Technical Issues:
-1. In `Board.js`, `playerO` is undefined on Player X's client, but not on other clients
+1. Database queries were not returning properly
 
-...I fixed this issue by passing `playerO` and `playerX` in each `board` emit. I understood that if I passed it through each emit, it would re-render to `playerX` being Player X's username.
-...I confirmed this worked by writing a series of `console.log` statements. Application was also printing `playerO` correctly on its side.
+I solved this issue by using `db.session.query` to query instead of `models.Player.query`. I would able to find resources and documentation online for this notation fairly easy, which helped me grasp why one query worked over the other.
 
-2. I did not experience any other issues.
+2. Printing usernames next to thier respective ranks
+
+I fixed this issue with the help of a classmate in Slack. They were kind enough to send a sample of printing usernames and ranks in the `<table>` tag in the return statement. 
