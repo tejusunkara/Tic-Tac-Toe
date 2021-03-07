@@ -141,7 +141,7 @@ def on_winner(data):    # update the ranking for that username in the DB based o
     print('users= '+str(users))
     print('rankings= '+str(rankings))
     
-    socketio.emit('leaderboard', {"users": users, "rankings": rankings}, broadcast=True, include_self=True)
+    socketio.emit('leaderboard', {"users": users, "ranks": rankings}, broadcast=True, include_self=True)
 
 @socketio.on('restart')
 def on_restart(data):

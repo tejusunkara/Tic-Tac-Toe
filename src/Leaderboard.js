@@ -9,12 +9,11 @@ export function Leaderboard(props) {
     const [usernames, setUsernames] = useState([]);
     const [ranks, setRanks] = useState([]);
     
-    setUsernames(props.players);
-    setRanks(props.ranks);
-    
     function showLeaderboard() { //display all players and their ranking
         console.log('showLeaderboard');
         setShowData(true);
+        setUsernames(props.players);
+        setRanks(props.ranks);
         console.log(usernames);
         console.log(ranks);
         socket.emit('leaderboard', { users: usernames, rankings: ranks });
@@ -24,9 +23,9 @@ export function Leaderboard(props) {
         socket.on('leaderboard', (data) => {
             console.log(data);
             setUsernames(data.users);
-            setRanks(data.rankings);
+            setRanks(data.ranks);
             console.log(data.users);
-            console.log(data.rankings);
+            console.log(data.ranks);
         });
     }, []);
 
