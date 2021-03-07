@@ -14,8 +14,6 @@ function App(props) {
   const [isLoggedIn, setLogin] = useState(false); //boolean value if user is logged in
   const inputRef = useRef(null); //for username input
   const [username, setUsername] = useState(""); //username of current user
-  var ranks = [];
-  var users = []
 
   function onClickLogin(user) { //user: user input from the text box
     //once user is 'logged in', emit message with user's username & number of users
@@ -42,14 +40,19 @@ function App(props) {
     setLogin(true); //not emitted bc only current client is logged it, not the rest
     setUserList({ ...newList });
   }
+  
+  var ranks = [];
+  var users = [];
 
   useEffect(() => { //getting back user data from server
     socket.on('login', (data) => {
       console.log(data.username + ' logged in');
-      setUserList(data.newUsers);
       ranks = [...data.ranks];
       users = [...data.users];
+      setUserList(data.newUsers);
       console.log(data);
+      console.log(ranks);
+      console.log(users);
     });
   }, []);
 

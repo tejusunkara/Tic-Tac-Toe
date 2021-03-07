@@ -54,14 +54,18 @@ export function Board(props) {
       }
       setGameOver(true);
       setWinnerMessage(winner);
+
       let result = '';
       if (winner.includes(username)) { //if winner message has client's name, client won
+        console.log('user won');
         result = 'won';
       }
       else if (winner === 'No winner :(') { //if no winner, draw
+        console.log('draw');
         result = 'draw';
       }
       else { //if winner message doesn't have client's name and its not a draw, client lost
+        console.log('user lost');
         result = 'lost';
       }
 

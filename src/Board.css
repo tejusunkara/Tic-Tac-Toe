@@ -29,11 +29,13 @@ mark {
 }
 
 table {
-    border: 1px solid black;
+	border: 1px solid black;
 }
 
-th, td, tr {
-  border: 1px solid black;
+th,
+td,
+tr {
+	border: 1px solid black;
 }
 
 .board {

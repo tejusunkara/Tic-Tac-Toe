@@ -5,13 +5,18 @@ const socket = io();
 
 export function Leaderboard(props) {
 
-    const [showRanks, setShowRanks] = useState(false); //to show leaderboard or not
-    const [usernames, setUsernames] = useState(props.players);
-    const [ranks, setRanks] = useState(props.ranks);
-
+    const [showData, setShowData] = useState(false); //to show leaderboard or not
+    const [usernames, setUsernames] = useState([]);
+    const [ranks, setRanks] = useState([]);
+    
+    setUsernames(props.players);
+    setRanks(props.ranks);
+    
     function showLeaderboard() { //display all players and their ranking
         console.log('showLeaderboard');
-        setShowRanks(true);
+        setShowData(true);
+        console.log(usernames);
+        console.log(ranks);
         socket.emit('leaderboard', { users: usernames, rankings: ranks });
     }
 
@@ -20,38 +25,40 @@ export function Leaderboard(props) {
             console.log(data);
             setUsernames(data.users);
             setRanks(data.rankings);
+            console.log(data.users);
+            console.log(data.rankings);
         });
     }, []);
 
     function hideLeaderboard() {
         console.log('hideLeaderboard');
-        setShowRanks(false);
+        setShowData(false);
     }
+    
+    const renderTable = usernames.map((user, index) => {
+        const score = ranks[index];
+        return (
+            <tr>
+                <td>{user}</td>
+                <td>{score}</td>
+            </tr>
+        );
+    });
 
-    if (showRanks) { //show ranks of all players
+    if (showData) { //show ranks of all players
         return (
             <div className="showRanks">
                 <table className="leaderTable">
                     <colgroup  span="2"></colgroup>
                     <tr>
                         <th>Users</th>
-                        <th>Ranking</th>
+                        <th>Rank</th>
                     </tr>
                     <tr>
-                        <tr>
-                            {usernames.map(user => (
-                                <td>{user}</td>
-                            ))}
-                        </tr>
+                        <td>
+                            {renderTable}
+                        </td>
                     </tr>
-                    <tr>
-                        <tr>
-                            {ranks.map(rank => (
-                                <td>{rank}</td>
-                            ))}
-                        </tr>
-                    </tr>
-                    
                 </table>
                 <button className="btnLeaderboard" onClick={() => hideLeaderboard()} type="button">Hide Leaderboard</button>
             </div>
