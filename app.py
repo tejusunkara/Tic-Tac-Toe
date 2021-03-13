@@ -52,19 +52,6 @@ def on_connect():
 def on_disconnect():
     print('User disconnected!')
 
-# def updateDB(): # orders players by rankings
-#     # models.Player.query.order_by(models.Player.rank.desc())
-#     all_players = db.session.query(models.Player).order_by(models.Player.rank.desc()) #table should be ordered from highest to lowest score
-#     # clearing arrays before populating them with correctly ordered data
-#     users = []
-#     rankings = []
-#     for player in all_players:  # reordering users based on rank order
-#         users.append(player.username)
-#         rankings.append(player.rank)
-    
-#     print(users)
-#     print(rankings)
-
 @socketio.on('login')
 def on_login(data):
     print('logged in')
@@ -148,6 +135,19 @@ def on_winner(data):    # update the ranking for that username in the DB based o
 def on_restart(data):
     print('restart '+str(data))
     socketio.emit('restart', data, broadcast=True, include_self=False)
+
+# def updateDB(): # orders players by rankings
+#     # models.Player.query.order_by(models.Player.rank.desc())
+#     all_players = db.session.query(models.Player).order_by(models.Player.rank.desc()) #table should be ordered from highest to lowest score
+#     # clearing arrays before populating them with correctly ordered data
+#     users = []
+#     rankings = []
+#     for player in all_players:  # reordering users based on rank order
+#         users.append(player.username)
+#         rankings.append(player.rank)
+    
+#     print(users)
+#     print(rankings)
 
 # Note we need to add this line so we can import app in the python shell
 if __name__ == "__main__":
