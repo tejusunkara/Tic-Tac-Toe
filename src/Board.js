@@ -1,74 +1,102 @@
 //client
-import React, { useState, useEffect } from 'react';
-import { Box } from './Box.js';
+import React, { useState, useEffect } from "react";
+import { Box } from "./Box.js";
 // import { Winner } from './Winner.js';
-import io from 'socket.io-client';
+import io from "socket.io-client";
 
 const socket = io(); //connect to server app.py
 
 export function Board(props) {
-
-  const [board, setBoard] = useState([null, null, null, null, null, null, null, null]); //initialized as an array with 9 null elements
+  const [board, setBoard] = useState([
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+  ]); //initialized as an array with 9 null elements
   const [xPlaysNext, setPlaysNext] = useState(true); //to check if player X is next; set to true bc X is starting player
   const [gameOver, setGameOver] = useState(false); //if game has reached the end
-  const [winnerMessage, setWinnerMessage] = useState('');
+  const [winnerMessage, setWinnerMessage] = useState("");
   const playerX = props.PlayerX;
   const playerO = props.PlayerO;
   var username = props.username;
 
   function updateBoard(boxNumber) {
-    var isPlayer = (username == playerX || username == playerO);
+    var isPlayer = username == playerX || username == playerO;
     const newBoard = [...board];
-    var boxFilled = (newBoard[boxNumber] == 'X' || newBoard[boxNumber] == 'O');
+    var boxFilled = newBoard[boxNumber] == "X" || newBoard[boxNumber] == "O";
 
-    if (newBoard.includes(null) && (isPlayer) && (!boxFilled)) { //if there are unmarked boxes and user who clicked is a player and the box that was clicked on isnt filled
-      console.log('open boxes, isplayer, and box not filled');
-      if ((xPlaysNext) && (username == playerX)) { //if next player is X and current user clicking is playerX, print X in cell
+    if (newBoard.includes(null) && isPlayer && !boxFilled) {
+      //if there are unmarked boxes and user who clicked is a player and the box that was clicked on isnt filled
+      console.log("open boxes, isplayer, and box not filled");
+      if (xPlaysNext && username == playerX) {
+        //if next player is X and current user clicking is playerX, print X in cell
         newBoard[boxNumber] = "X";
-        console.log('X');
+        console.log("X");
         setPlaysNext(!xPlaysNext); //only switch players if the correct player clicks on the board
-        socket.emit('board', { updateBoard: newBoard, cell: boxNumber, xPlaysNext: !xPlaysNext, gameOver: gameOver, winnerMessage: winnerMessage }); //emits only if playerX clicks the board
-      }
-      else if ((!xPlaysNext) && (username == playerO)) { //if next player is O and current user is playerO, print O in cell
+        socket.emit("board", {
+          updateBoard: newBoard,
+          cell: boxNumber,
+          xPlaysNext: !xPlaysNext,
+          gameOver: gameOver,
+          winnerMessage: winnerMessage,
+        }); //emits only if playerX clicks the board
+      } else if (!xPlaysNext && username == playerO) {
+        //if next player is O and current user is playerO, print O in cell
         newBoard[boxNumber] = "O";
-        console.log('O');
+        console.log("O");
         setPlaysNext(!xPlaysNext);
-        socket.emit('board', { updateBoard: newBoard, cell: boxNumber, xPlaysNext: !xPlaysNext, gameOver: gameOver, winnerMessage: winnerMessage }); //emits only if playerO clicks the board
+        socket.emit("board", {
+          updateBoard: newBoard,
+          cell: boxNumber,
+          xPlaysNext: !xPlaysNext,
+          gameOver: gameOver,
+          winnerMessage: winnerMessage,
+        }); //emits only if playerO clicks the board
       }
       setBoard(newBoard);
-      console.log('fill in board');
+      console.log("fill in board");
     }
-    if (!newBoard.includes(null) || calculateWinner(newBoard)) { //if there is a winner or if the board is full
+    if (!newBoard.includes(null) || calculateWinner(newBoard)) {
+      //if there is a winner or if the board is full
       var winner;
-      let result = '';
-      let loser = '';
-      if (calculateWinner(newBoard) == 'X') {
-        console.log('winner is X');
-        winner = 'Winner is ' + playerX + '!';
+      let result = "";
+      let loser = "";
+      if (calculateWinner(newBoard) == "X") {
+        console.log("winner is X");
+        winner = "Winner is " + playerX + "!";
         result = playerX;
         loser = playerO;
-      }
-      else if (calculateWinner(newBoard) == 'O') {
-        console.log('winner is O');
-        winner = 'Winner is ' + playerO + '!';
+      } else if (calculateWinner(newBoard) == "O") {
+        console.log("winner is O");
+        winner = "Winner is " + playerO + "!";
         result = playerO;
         loser = playerX;
-      }
-      else {
-        console.log('no winner');
-        winner = 'No winner :(';
-        result = 'draw';
+      } else {
+        console.log("no winner");
+        winner = "No winner :(";
+        result = "draw";
       }
       setGameOver(true);
       setWinnerMessage(winner);
-      socket.emit('winner', { winner: result, loser: loser }); //emit an event telling the server whether that client’s username won or lost
-      socket.emit('board', { updateBoard: newBoard, cell: boxNumber, xPlaysNext: xPlaysNext, gameOver: !gameOver, winnerMessage: winner });
+      socket.emit("winner", { winner: result, loser: loser }); //emit an event telling the server whether that client’s username won or lost
+      socket.emit("board", {
+        updateBoard: newBoard,
+        cell: boxNumber,
+        xPlaysNext: xPlaysNext,
+        gameOver: !gameOver,
+        winnerMessage: winner,
+      });
     }
   }
 
-  useEffect(() => { //updating board
-    socket.on('board', (data) => {
-      console.log('Board was clicked');
+  useEffect(() => {
+    //updating board
+    socket.on("board", (data) => {
+      console.log("Board was clicked");
       setBoard(data.updateBoard);
       setPlaysNext(data.xPlaysNext);
       setGameOver(data.gameOver);
@@ -77,25 +105,33 @@ export function Board(props) {
     });
   }, []);
 
-  function onClickRestart() { //When the game ends, Player X and Player O will have the option to click a button to play again
-    console.log('play again');
+  function onClickRestart() {
+    //When the game ends, Player X and Player O will have the option to click a button to play again
+    console.log("play again");
     //set all states to initial values
     const emptyBoard = [null, null, null, null, null, null, null, null];
     setBoard(emptyBoard);
     setPlaysNext(true);
     setGameOver(false);
-    setWinnerMessage('');
-    console.log('clickReplay:');
+    setWinnerMessage("");
+    console.log("clickReplay:");
     console.log(board);
     console.log(xPlaysNext);
     console.log(gameOver);
     console.log(winnerMessage);
-    socket.emit('restart', { updateBoard: emptyBoard, cell: null, xPlaysNext: true, gameOver: false, winnerMessage: '' });
+    socket.emit("restart", {
+      updateBoard: emptyBoard,
+      cell: null,
+      xPlaysNext: true,
+      gameOver: false,
+      winnerMessage: "",
+    });
   }
 
-  useEffect(() => { //resetting board
-    socket.on('restart', (data) => {
-      console.log('restart');
+  useEffect(() => {
+    //resetting board
+    socket.on("restart", (data) => {
+      console.log("restart");
       console.log(data);
     });
   }, []);
@@ -113,51 +149,56 @@ export function Board(props) {
     ];
     for (let i = 0; i < lines.length; i++) {
       const [a, b, c] = lines[i];
-      if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+      if (
+        squares[a] &&
+        squares[a] === squares[b] &&
+        squares[a] === squares[c]
+      ) {
         return squares[a];
       }
     }
     return null;
   }
 
-  if (gameOver) { //display once winner is calculated
+  if (gameOver) {
+    //display once winner is calculated
     console.log(winnerMessage);
-    if (username == playerX || username == playerO) { //display play again button for player X and player O
+    if (username == playerX || username == playerO) {
+      //display play again button for player X and player O
       return (
         <div className="playerMessage">
-          <div>{ winnerMessage }</div>
-          <button class="replay" onClick={() => onClickRestart()} >Restart</button>
+          <div>{winnerMessage}</div>
+          <button class="replay" onClick={() => onClickRestart()}>
+            Restart
+          </button>
         </div>
       );
-    }
-    else {
+    } else {
       return (
         <div className="spectatorMessage">
-          <div>{ winnerMessage }</div>
+          <div>{winnerMessage}</div>
         </div>
       );
     }
   }
 
-  const status = 'Next player: ' + (xPlaysNext ? playerX : playerO);
+  const status = "Next player: " + (xPlaysNext ? playerX : playerO);
 
   return (
     <div>
-      <div className="next">{ status }</div>
-      
-      <div className="board">
-        <Box onClick={() => updateBoard(0)} board={board[0]}/>
-        <Box onClick={() => updateBoard(1)} board={board[1]}/>
-        <Box onClick={() => updateBoard(2)} board={board[2]}/>
-        <Box onClick={() => updateBoard(3)} board={board[3]}/>
-        <Box onClick={() => updateBoard(4)} board={board[4]}/>
-        <Box onClick={() => updateBoard(5)} board={board[5]}/>
-        <Box onClick={() => updateBoard(6)} board={board[6]}/>
-        <Box onClick={() => updateBoard(7)} board={board[7]}/>
-        <Box onClick={() => updateBoard(8)} board={board[8]}/>
-      </div>
-      
-    </div>
+      <div className="next">{status}</div>
 
+      <div className="board">
+        <Box onClick={() => updateBoard(0)} board={board[0]} />
+        <Box onClick={() => updateBoard(1)} board={board[1]} />
+        <Box onClick={() => updateBoard(2)} board={board[2]} />
+        <Box onClick={() => updateBoard(3)} board={board[3]} />
+        <Box onClick={() => updateBoard(4)} board={board[4]} />
+        <Box onClick={() => updateBoard(5)} board={board[5]} />
+        <Box onClick={() => updateBoard(6)} board={board[6]} />
+        <Box onClick={() => updateBoard(7)} board={board[7]} />
+        <Box onClick={() => updateBoard(8)} board={board[8]} />
+      </div>
+    </div>
   );
 }
