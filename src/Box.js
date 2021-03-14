@@ -1,6 +1,6 @@
 import React from "react";
 
-export function Box(props) {
+export function Box(props) {    //for each cell
   return (
     <div
       class="box"
