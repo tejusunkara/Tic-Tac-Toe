@@ -1,10 +1,11 @@
-//client
-import React, { useState, useEffect } from "react";
-import { Box } from "./Box.js";
+// client
+import React, { useState, useEffect } from 'react';
+import io from 'socket.io-client';
+import { PropTypes } from 'prop-types';
+import { Box } from './Box';
 // import { Winner } from './Winner.js';
-import io from "socket.io-client";
 
-const socket = io(); //connect to server app.py
+const socket = io(); // connect to server app.py
 
 export function Board(props) {
   const [board, setBoard] = useState([
@@ -16,125 +17,14 @@ export function Board(props) {
     null,
     null,
     null,
-  ]); //initialized as an array with 9 null elements
-  const [xPlaysNext, setPlaysNext] = useState(true); //to check if player X is next; set to true bc X is starting player
-  const [gameOver, setGameOver] = useState(false); //if game has reached the end
-  const [winnerMessage, setWinnerMessage] = useState("");
-  const playerX = props.PlayerX;
-  const playerO = props.PlayerO;
-  var username = props.username;
-
-  function updateBoard(boxNumber) {
-    var isPlayer = username == playerX || username == playerO;
-    const newBoard = [...board];
-    var boxFilled = newBoard[boxNumber] == "X" || newBoard[boxNumber] == "O";
-
-    if (newBoard.includes(null) && isPlayer && !boxFilled) {
-      //if there are unmarked boxes and user who clicked is a player and the box that was clicked on isnt filled
-      console.log("open boxes, isplayer, and box not filled");
-      if (xPlaysNext && username == playerX) {
-        //if next player is X and current user clicking is playerX, print X in cell
-        newBoard[boxNumber] = "X";
-        console.log("X");
-        setPlaysNext(!xPlaysNext); //only switch players if the correct player clicks on the board
-        socket.emit("board", {
-          updateBoard: newBoard,
-          cell: boxNumber,
-          xPlaysNext: !xPlaysNext,
-          gameOver: gameOver,
-          winnerMessage: winnerMessage,
-        }); //emits only if playerX clicks the board
-      } else if (!xPlaysNext && username == playerO) {
-        //if next player is O and current user is playerO, print O in cell
-        newBoard[boxNumber] = "O";
-        console.log("O");
-        setPlaysNext(!xPlaysNext);
-        socket.emit("board", {
-          updateBoard: newBoard,
-          cell: boxNumber,
-          xPlaysNext: !xPlaysNext,
-          gameOver: gameOver,
-          winnerMessage: winnerMessage,
-        }); //emits only if playerO clicks the board
-      }
-      setBoard(newBoard);
-      console.log("fill in board");
-    }
-    if (!newBoard.includes(null) || calculateWinner(newBoard)) {
-      //if there is a winner or if the board is full
-      var winner;
-      let result = "";
-      let loser = "";
-      if (calculateWinner(newBoard) == "X") {
-        console.log("winner is X");
-        winner = "Winner is " + playerX + "!";
-        result = playerX;
-        loser = playerO;
-      } else if (calculateWinner(newBoard) == "O") {
-        console.log("winner is O");
-        winner = "Winner is " + playerO + "!";
-        result = playerO;
-        loser = playerX;
-      } else {
-        console.log("no winner");
-        winner = "No winner :(";
-        result = "draw";
-      }
-      setGameOver(true);
-      setWinnerMessage(winner);
-      socket.emit("winner", { winner: result, loser: loser }); //emit an event telling the server whether that client’s username won or lost
-      socket.emit("board", {
-        updateBoard: newBoard,
-        cell: boxNumber,
-        xPlaysNext: xPlaysNext,
-        gameOver: !gameOver,
-        winnerMessage: winner,
-      });
-    }
-  }
-
-  useEffect(() => {
-    //updating board
-    socket.on("board", (data) => {
-      console.log("Board was clicked");
-      setBoard(data.updateBoard);
-      setPlaysNext(data.xPlaysNext);
-      setGameOver(data.gameOver);
-      setWinnerMessage(data.winnerMessage);
-      console.log(data);
-    });
-  }, []);
-
-  function onClickRestart() {
-    //When the game ends, Player X and Player O will have the option to click a button to play again
-    console.log("play again");
-    //set all states to initial values
-    const emptyBoard = [null, null, null, null, null, null, null, null];
-    setBoard(emptyBoard);
-    setPlaysNext(true);
-    setGameOver(false);
-    setWinnerMessage("");
-    console.log("clickReplay:");
-    console.log(board);
-    console.log(xPlaysNext);
-    console.log(gameOver);
-    console.log(winnerMessage);
-    socket.emit("restart", {
-      updateBoard: emptyBoard,
-      cell: null,
-      xPlaysNext: true,
-      gameOver: false,
-      winnerMessage: "",
-    });
-  }
-
-  useEffect(() => {
-    //resetting board
-    socket.on("restart", (data) => {
-      console.log("restart");
-      console.log(data);
-    });
-  }, []);
+  ]); // initialized as an array with 9 null elements
+  // to check if player X is next; set to true bc X is starting player
+  const [xPlaysNext, setPlaysNext] = useState(true);
+  const [gameOver, setGameOver] = useState(false); // if game has reached the end
+  const [winnerMessage, setWinnerMessage] = useState('');
+  const { PlayerX } = props;
+  const { PlayerO } = props;
+  const { username } = props;
 
   function calculateWinner(squares) {
     const lines = [
@@ -147,12 +37,12 @@ export function Board(props) {
       [0, 4, 8],
       [2, 4, 6],
     ];
-    for (let i = 0; i < lines.length; i++) {
+    for (let i = 0; i < lines.length; i += 1) {
       const [a, b, c] = lines[i];
       if (
-        squares[a] &&
-        squares[a] === squares[b] &&
-        squares[a] === squares[c]
+        squares[a]
+        && squares[a] === squares[b]
+        && squares[a] === squares[c]
       ) {
         return squares[a];
       }
@@ -160,29 +50,142 @@ export function Board(props) {
     return null;
   }
 
+  function updateBoard(boxNumber) {
+    const isPlayer = username === PlayerX || username === PlayerO;
+    const newBoard = [...board];
+    const boxFilled = newBoard[boxNumber] === 'X' || newBoard[boxNumber] === 'O';
+
+    if (newBoard.includes(null) && isPlayer && !boxFilled) {
+      // if there are unmarked boxes and user who clicked is a player and the box that was clicked
+      // on isnt filled
+      // console.log('open boxes, isplayer, and box not filled');
+      if (xPlaysNext && username === PlayerX) {
+        // if next player is X and current user clicking is PlayerX, print X in cell
+        newBoard[boxNumber] = 'X';
+        // console.log('X');
+        setPlaysNext(!xPlaysNext); // only switch players if the correct player clicks on the board
+        socket.emit('board', {
+          updateBoard: newBoard,
+          cell: boxNumber,
+          xPlaysNext: !xPlaysNext,
+          gameOver,
+          winnerMessage,
+        }); // emits only if PlayerX clicks the board
+      } else if (!xPlaysNext && username === PlayerO) {
+        // if next player is O and current user is PlayerO, print O in cell
+        newBoard[boxNumber] = 'O';
+        // console.log('O');
+        setPlaysNext(!xPlaysNext);
+        socket.emit('board', {
+          updateBoard: newBoard,
+          cell: boxNumber,
+          xPlaysNext: !xPlaysNext,
+          gameOver,
+          winnerMessage,
+        }); // emits only if PlayerO clicks the board
+      }
+      setBoard(newBoard);
+      // console.log('fill in board');
+    }
+    if (!newBoard.includes(null) || calculateWinner(newBoard)) {
+      // if there is a winner or if the board is full
+      let winner;
+      let result = '';
+      let loser = '';
+      if (calculateWinner(newBoard) === 'X') {
+        // console.log('winner is X');
+        winner = `Winner is ${PlayerX}!`;
+        result = PlayerX;
+        loser = PlayerO;
+      } else if (calculateWinner(newBoard) === 'O') {
+        // console.log('winner is O');
+        winner = `Winner is ${PlayerO}!`;
+        result = PlayerO;
+        loser = PlayerX;
+      } else {
+        // console.log('no winner');
+        winner = 'No winner :(';
+        result = 'draw';
+      }
+      setGameOver(true);
+      setWinnerMessage(winner);
+      socket.emit('winner', { winner: result, loser }); // emit an event telling the server whether that client’s username won or lost
+      socket.emit('board', {
+        updateBoard: newBoard,
+        cell: boxNumber,
+        xPlaysNext,
+        gameOver: !gameOver,
+        winnerMessage: winner,
+      });
+    }
+  }
+
+  useEffect(() => {
+    // updating board
+    socket.on('board', (data) => {
+      // console.log('Board was clicked');
+      // console.log(data);
+      setBoard(data.updateBoard);
+      setPlaysNext(data.xPlaysNext);
+      setGameOver(data.gameOver);
+      setWinnerMessage(data.winnerMessage);
+    });
+  }, []);
+
+  function onClickRestart() {
+    // When the game ends, Player X and Player O will have the option to click a
+    // button to play again
+    // console.log('play again');
+    // set all states to initial values
+    const emptyBoard = [null, null, null, null, null, null, null, null];
+    setBoard(emptyBoard);
+    setPlaysNext(true);
+    setGameOver(false);
+    setWinnerMessage('');
+    // console.log('clickReplay:');
+    // console.log(board);
+    // console.log(xPlaysNext);
+    // console.log(gameOver);
+    // console.log(winnerMessage);
+    socket.emit('restart', {
+      updateBoard: emptyBoard,
+      cell: null,
+      xPlaysNext: true,
+      gameOver: false,
+      winnerMessage: '',
+    });
+  }
+
+  useEffect(() => {
+    // resetting board
+    socket.on('restart', (data) => {
+      // console.log('restart');
+      console.log(data);
+    });
+  }, []);
+
   if (gameOver) {
-    //display once winner is calculated
-    console.log(winnerMessage);
-    if (username == playerX || username == playerO) {
-      //display play again button for player X and player O
+    // display once winner is calculated
+    // console.log(winnerMessage);
+    if (username === PlayerX || username === PlayerO) {
+      // display play again button for player X and player O
       return (
         <div className="playerMessage">
           <div>{winnerMessage}</div>
-          <button class="replay" onClick={() => onClickRestart()}>
+          <button className="replay" type="submit" onClick={() => onClickRestart()}>
             Restart
           </button>
         </div>
       );
-    } else {
-      return (
-        <div className="spectatorMessage">
-          <div>{winnerMessage}</div>
-        </div>
-      );
     }
+    return (
+      <div className="spectatorMessage">
+        <div>{winnerMessage}</div>
+      </div>
+    );
   }
 
-  const status = "Next player: " + (xPlaysNext ? playerX : playerO);
+  const status = `Next player: ${(xPlaysNext ? PlayerX : PlayerO)}`;
 
   return (
     <div>
@@ -202,3 +205,10 @@ export function Board(props) {
     </div>
   );
 }
+
+Board.propTypes = {
+  PlayerX: PropTypes.string.isRequired,
+  PlayerO: PropTypes.string.isRequired,
+  username: PropTypes.string.isRequired,
+};
+export default Board;

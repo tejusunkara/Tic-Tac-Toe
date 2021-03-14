@@ -68,19 +68,10 @@ def on_login(data):
         new_player = models.Player(username=data['username'], rank=100)
         db.session.add(new_player)
         db.session.commit()
-
-    all_players = db.session.query(models.Player).order_by(
-        models.Player.rank.desc()
-    )  #table should be ordered from highest to lowest score
-    # clearing arrays before populating them with correctly ordered data
+    
     users = []
     rankings = []
-    for player in all_players:  # reordering users based on rank order
-        users.append(player.username)
-        rankings.append(player.rank)
-
-    print('users= ' + str(users))
-    print('rankings= ' + str(rankings))
+    updateDB(users, rankings)
 
     socketio.emit('login', {
         'newUsers': data['newUsers'],
@@ -107,18 +98,10 @@ def on_board(
 @socketio.on('leaderboard')
 def on_leaderboard(data):  # updating leaderboard data
     print(data)
-
-    all_players = db.session.query(models.Player).order_by(
-        models.Player.rank.desc()
-    )  #table should be ordered from highest to lowest score
-    # clearing arrays before populating them with correctly ordered data
+    
     users = []
     rankings = []
-    for player in all_players:  # reordering users based on rank order
-        users.append(player.username)
-        rankings.append(player.rank)
-    print('users= ' + str(users))
-    print('rankings= ' + str(rankings))
+    updateDB(users, rankings)
 
     # This emits the 'onClickBoard' event from the server to all clients except for
     # the client that emmitted the event that triggered this function
@@ -147,17 +130,9 @@ def on_winner(
     print(str(winner.rank))
     print(str(loser.rank))
 
-    all_players = db.session.query(models.Player).order_by(
-        models.Player.rank.desc()
-    )  #table should be ordered from highest to lowest score
-    # clearing arrays before populating them with correctly ordered data
     users = []
     rankings = []
-    for player in all_players:  # reordering users based on rank order
-        users.append(player.username)
-        rankings.append(player.rank)
-    print('users= ' + str(users))
-    print('rankings= ' + str(rankings))
+    updateDB(users, rankings)
 
     socketio.emit('leaderboard', {
         "users": users,
@@ -173,18 +148,17 @@ def on_restart(data):
     socketio.emit('restart', data, broadcast=True, include_self=False)
 
 
-# def updateDB(): # orders players by rankings
-#     # models.Player.query.order_by(models.Player.rank.desc())
-#     all_players = db.session.query(models.Player).order_by(models.Player.rank.desc()) #table should be ordered from highest to lowest score
-#     # clearing arrays before populating them with correctly ordered data
-#     users = []
-#     rankings = []
-#     for player in all_players:  # reordering users based on rank order
-#         users.append(player.username)
-#         rankings.append(player.rank)
+def updateDB(users, rankings): # orders players by rankings
+    # models.Player.query.order_by(models.Player.rank.desc())
+    all_players = db.session.query(models.Player).order_by(models.Player.rank.desc()) #table should be ordered from highest to lowest score
+    # clearing arrays before populating them with correctly ordered data
+    
+    for player in all_players:  # reordering users based on rank order
+        users.append(player.username)
+        rankings.append(player.rank)
 
-#     print(users)
-#     print(rankings)
+    print(users)
+    print(rankings)
 
 # Note we need to add this line so we can import app in the python shell
 if __name__ == "__main__":

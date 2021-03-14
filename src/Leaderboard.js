@@ -1,45 +1,50 @@
-import React, { useState, useEffect } from "react";
-import io from "socket.io-client";
+/* eslint-disable no-unused-vars */
+import React, { useState, useEffect } from 'react';
+import io from 'socket.io-client';
+import { PropTypes } from 'prop-types';
 
 const socket = io();
 
 export function Leaderboard(props) {
-  const [showData, setShowData] = useState(false); //to show leaderboard or not
+  const [showData, setShowData] = useState(false); // to show leaderboard or not
   const [usernames, setUsernames] = useState([]);
-  const [ranks, setRanks] = useState([]);
+  const [rank, setRank] = useState([]);
   // const [currentUser, setCurrentUser] = useState([]);
+  const { players } = props;
+  const { ranks } = props;
+  const { currUser } = props;
 
   function showLeaderboard() {
-    //display all players and their ranking
-    console.log("showLeaderboard");
+    // display all players and their ranking
+    // console.log('showLeaderboard');
     setShowData(true);
-    setUsernames(props.players);
-    setRanks(props.ranks);
+    setUsernames(players);
+    setRank(ranks);
     // setCurrentUser(props.currUser);
     // console.log(currentUser);
-    console.log(usernames);
-    console.log(ranks);
-    socket.emit("leaderboard", { users: usernames, rankings: ranks });
+    // console.log(usernames);
+    // console.log(ranks);
+    socket.emit('leaderboard', { users: usernames, rankings: ranks });
   }
 
   useEffect(() => {
-    socket.on("leaderboard", (data) => {
+    socket.on('leaderboard', (data) => {
       console.log(data);
       setUsernames(data.users);
-      setRanks(data.ranks);
-      console.log(data.users);
-      console.log(data.ranks);
+      setRank(data.ranks);
+      // console.log(data.users);
+      // console.log(data.ranks);
     });
   }, []);
 
   function hideLeaderboard() {
-    console.log("hideLeaderboard");
+    // console.log('hideLeaderboard');
     setShowData(false);
   }
 
   const renderTable = usernames.map((user, index) => {
     const score = ranks[index];
-    if (user == props.currUser) {
+    if (user === currUser) {
       return (
         <tr>
           <td>
@@ -50,22 +55,20 @@ export function Leaderboard(props) {
           </td>
         </tr>
       );
-    } else {
-      return (
-        <tr>
-          <td>{user}</td>
-          <td>{score}</td>
-        </tr>
-      );
     }
+    return (
+      <tr>
+        <td>{user}</td>
+        <td>{score}</td>
+      </tr>
+    );
   });
 
   if (showData) {
-    //show ranks of all players
+    // show ranks of all players
     return (
       <div className="showRanks">
         <table className="leaderTable">
-          <colgroup span="2"></colgroup>
           <tr>
             <th> User </th>
             <th> Rank </th>
@@ -95,3 +98,10 @@ export function Leaderboard(props) {
     </button>
   );
 }
+
+Leaderboard.propTypes = {
+  ranks: PropTypes.arrayOf(PropTypes.number).isRequired,
+  players: PropTypes.arrayOf(PropTypes.string).isRequired,
+  currUser: PropTypes.string.isRequired,
+};
+export default Leaderboard;

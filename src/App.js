@@ -1,62 +1,63 @@
-import logo from "./logo.svg";
-import "./App.css";
-import { LoginDisplay } from "./LoginDisplay.js";
-import { Leaderboard } from "./Leaderboard.js";
-import "./Board.css";
-import io from "socket.io-client";
-import React, { useState, useEffect, useRef } from "react";
+/* eslint-disable no-unused-expressions */
+import io from 'socket.io-client';
+import './Board.css';
+import React, { useState, useEffect, useRef } from 'react';
+import './App.css';
+import { LoginDisplay } from './LoginDisplay';
+import { Leaderboard } from './Leaderboard';
 
 const socket = io();
 
-function App(props) {
-  const [userList, setUserList] = useState({ X: "", O: "", Spectators: [] }); //list of users
-  const [isLoggedIn, setLogin] = useState(false); //boolean value if user is logged in
-  const inputRef = useRef(null); //for username input
-  const [username, setUsername] = useState(""); //username of current user
+function App() {
+  const [userList, setUserList] = useState({ X: '', O: '', Spectators: [] }); // list of users
+  const [isLoggedIn, setLogin] = useState(false); // boolean value if user is logged in
+  const inputRef = useRef(null); // for username input
+  const [username, setUsername] = useState(''); // username of current user
+  const [ranks, setRanks] = useState([]);
+  const [users, setUsers] = useState([]);
 
   function onClickLogin(user) {
-    //user: user input from the text box
-    //once user is 'logged in', emit message with user's username & number of users
-    console.log("clicked login");
+    // user: user input from the text box
+    // once user is 'logged in', emit message with user's username & number of users
+    // console.log('clicked login');
     const newList = { ...userList };
 
     if (inputRef != null) {
-      user = inputRef.current.value; //user is set to the input value
-      if (newList.X == "") {
-        console.log("user is X");
-        newList.X = user;
-      } else if (newList.O == "") {
-        console.log("user is O");
-        newList.O = user;
+      let loginUser = user;
+      loginUser = inputRef.current.value; // user is set to the input value
+      if (newList.X === '') {
+        // console.log('user is X');
+        newList.X = loginUser;
+      } else if (newList.O === '') {
+        // console.log('user is O');
+        newList.O = loginUser;
       } else {
-        console.log("user is a spectator");
-        newList.Spectators = [...newList.Spectators, user];
+        // console.log('user is a spectator');
+        newList.Spectators = [...newList.Spectators, loginUser];
       }
-      setUsername(user); //setting current user's username to its client
-      socket.emit("login", { newUsers: newList, username: user }); //emitting to the server
+      setUsername(loginUser); // setting current user's username to its client
+      socket.emit('login', { newUsers: newList, username: loginUser }); // emitting to the server
     }
-    setLogin(true); //not emitted bc only current client is logged it, not the rest
+    setLogin(true); // not emitted bc only current client is logged it, not the rest
     setUserList({ ...newList });
   }
 
-  var ranks = [];
-  var users = [];
-
   useEffect(() => {
-    //getting back user data from server
-    socket.on("login", (data) => {
-      console.log(data.username + " logged in");
-      ranks = [...data.ranks];
-      users = [...data.users];
+    // getting back user data from server
+    socket.on('login', (data) => {
+      // console.log(data.username);
+      // console.log('logged in');
       setUserList(data.newUsers);
-      console.log(data);
-      console.log(ranks);
-      console.log(users);
+      setRanks[data.ranks];
+      setUsers[data.users];
+      // console.log(data);
+      // console.log(ranks);
+      // console.log(users);
     });
   }, []);
 
   if (isLoggedIn) {
-    //display once logged in
+    // display once logged in
     return (
       <div>
         <LoginDisplay
@@ -77,8 +78,10 @@ function App(props) {
       <div className="loggingIn">
         <h1>Please login</h1>
         <form>
-          <label htmlFor="login">Username: </label>
-          <input ref={inputRef} type="text" />
+          <label htmlFor="login">
+            Username:
+            <input ref={inputRef} type="text" />
+          </label>
           <button
             className="loginbtn"
             onClick={() => onClickLogin(inputRef)}

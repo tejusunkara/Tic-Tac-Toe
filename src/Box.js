@@ -1,14 +1,25 @@
-import React from "react";
+import React from 'react';
+import { PropTypes } from 'prop-types';
 
-export function Box(props) {    //for each cell
+export function Box(props) { // for each cell
+  const { board } = props;
+  const { onClick } = props;
   return (
     <div
-      class="box"
+      className="box"
       onClick={() => {
-        props.onClick();
+        onClick();
       }}
+      role="presentation"
     >
-      {props.board}
+      {board}
     </div>
   );
 }
+
+Box.propTypes = {
+  board: PropTypes.node.isRequired,
+  onClick: PropTypes.func.isRequired,
+};
+
+export default Box;

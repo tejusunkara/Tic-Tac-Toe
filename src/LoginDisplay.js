@@ -1,29 +1,55 @@
 import React from 'react';
-import { Board } from './Board.js';
+import { PropTypes } from 'prop-types';
+import { Board } from './Board';
 
 export function LoginDisplay(props) {
-  const spectators = props.Spectators;
+  const { Spectators } = props;
+  const { PlayerX } = props;
+  const { PlayerO } = props;
+  const { username } = props;
 
   return (
     <div className="greeting">
       <div className="tictac">
         <h1>Tic Tac Toe</h1>
-        {<Board PlayerX={props.PlayerX} PlayerO={props.PlayerO} Spectators={props.Spectators} username={props.username}/>}
+        <Board
+          PlayerX={PlayerX}
+          PlayerO={PlayerO}
+          Spectators={Spectators}
+          username={username}
+        />
       </div>
       <div className="userslist">
         <ul>
-          Player X: {props.PlayerX}
+          Player X:
+          {PlayerX}
         </ul>
         <ul>
-          Player O: {props.PlayerO}
+          Player O:
+          {PlayerO}
         </ul>
         <ul>
-          Spectators: {spectators.map(spectator => (  //if username matches spectator
-            <li>{spectator}</li>
-          ))}
+          Spectators:
+          {' '}
+          {Spectators.map(
+            (spectator) => (// if username matches spectator
+              <li>{spectator}</li>
+            ),
+          )}
         </ul>
       </div>
     </div>
   );
-
 }
+
+LoginDisplay.propTypes = {
+  Spectators: PropTypes.arrayOf(PropTypes.string).isRequired,
+  PlayerX: PropTypes.string.isRequired,
+  PlayerO: PropTypes.string.isRequired,
+  username: PropTypes.string.isRequired,
+};
+
+LoginDisplay.defaultProps = {
+
+};
+export default LoginDisplay;

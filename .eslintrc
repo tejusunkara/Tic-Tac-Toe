@@ -1,3 +1,4 @@
-"extends": "airbnb"
 "extends": ["airbnb", "airbnb/hooks"]
-"extends": "eslint:recommended"
+"rules": {
+  "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }]
+}
