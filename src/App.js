@@ -77,7 +77,7 @@ function App(props) {
       <div className="loggingIn">
         <h1>Please login</h1>
         <form>
-          <label for="login">Username;: </label>
+          <label for="login">Username: </label>
           <input ref={inputRef} type="text" />
           <button
             className="loginbtn"
