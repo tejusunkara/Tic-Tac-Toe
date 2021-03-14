@@ -9,21 +9,15 @@ export function Leaderboard(props) {
   const [showData, setShowData] = useState(false); // to show leaderboard or not
   const [usernames, setUsernames] = useState([]);
   const [rank, setRank] = useState([]);
-  // const [currentUser, setCurrentUser] = useState([]);
   const { players } = props;
   const { ranks } = props;
   const { currUser } = props;
 
   function showLeaderboard() {
     // display all players and their ranking
-    // console.log('showLeaderboard');
     setShowData(true);
     setUsernames(players);
     setRank(ranks);
-    // setCurrentUser(props.currUser);
-    // console.log(currentUser);
-    // console.log(usernames);
-    // console.log(ranks);
     socket.emit('leaderboard', { users: usernames, rankings: ranks });
   }
 
@@ -32,13 +26,10 @@ export function Leaderboard(props) {
       console.log(data);
       setUsernames(data.users);
       setRank(data.ranks);
-      // console.log(data.users);
-      // console.log(data.ranks);
     });
   }, []);
 
   function hideLeaderboard() {
-    // console.log('hideLeaderboard');
     setShowData(false);
   }
 
@@ -104,4 +95,5 @@ Leaderboard.propTypes = {
   players: PropTypes.arrayOf(PropTypes.string).isRequired,
   currUser: PropTypes.string.isRequired,
 };
+
 export default Leaderboard;
