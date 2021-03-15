@@ -97,14 +97,17 @@ def on_board(data):  # data is whatever arg you pass in your emit call on client
     print(data)
     # This emits the 'onClickBoard' event from the server to all clients except for
     # the client that emmitted the event that triggered this function
-    dict = {}
-    for key, value in data.items():
-        if key == 'cell':
-            dict[key] = value
-            return dict
+    board(data)
 
     SOCKETIO.emit('board', data, broadcast=True, include_self=False)
 
+def board(element):
+    dict = {}
+    for key, value in element.items():
+        if key == 'cell':
+            dict[key] = value
+        
+    return dict
 
 @SOCKETIO.on('leaderboard')
 def on_leaderboard(data):  # updating leaderboard data
@@ -158,15 +161,19 @@ def on_restart(data):
     '''to replay'''
     print('restart ' + str(data))
     
-    dict = {}
-    for x,y in data.items():
-        if x == 'updateBoard' and y == [None, None, None, None, None, None, None, None, None]:
-            dict[x] = y
-        print(dict)
-        return dict
+    restart(data)
     
     SOCKETIO.emit('restart', data, broadcast=True, include_self=False)
 
+def restart(element):
+    dict = {}
+    for x,y in element.items():
+        if x == 'updateBoard' and y == [None, None, None, None, None, None, None, None, None]:
+            dict[x] = y
+        if x == 'cell' and y is None:
+            dict[x] = y
+        print(dict)
+    return dict
 
 def update_db(users, rankings):
     '''orders players by rankings'''

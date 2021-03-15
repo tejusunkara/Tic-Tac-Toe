@@ -6,7 +6,7 @@ import sys
 
 # This lets you import from the parent directory (one level up)
 sys.path.append(os.path.dirname(os.path.abspath('../')))
-from app import on_restart
+from app import restart
 
 KEY_INPUT = "input"
 KEY_EXPECTED = "expected"
@@ -25,6 +25,7 @@ class OnRestartTestCase(unittest.TestCase):
                 
                 KEY_EXPECTED: {
                     'updateBoard': [None, None, None, None, None, None, None, None, None],
+                    'cell': None
                 }
             },
             
@@ -36,7 +37,9 @@ class OnRestartTestCase(unittest.TestCase):
                     'gameOver': False,
                     'winnerMessage': ''
                 },
-                KEY_EXPECTED: {}
+                KEY_EXPECTED: { 
+                    'cell': None
+                }
             },
             
             {
@@ -56,7 +59,7 @@ class OnRestartTestCase(unittest.TestCase):
     def test_on_restart(self):
         for test in self.success_test_params:
             
-            actual_result = on_restart(test[KEY_INPUT])
+            actual_result = restart(test[KEY_INPUT])
             print(actual_result)
             expected_result = test[KEY_EXPECTED]
             print(expected_result)

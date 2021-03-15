@@ -6,7 +6,7 @@ import sys
 
 # This lets you import from the parent directory (one level up)
 sys.path.append(os.path.dirname(os.path.abspath('../')))
-from app import on_board
+from app import board
 
 KEY_INPUT = "input"
 KEY_EXPECTED = "expected"
@@ -58,7 +58,7 @@ class OnBoardTestCase(unittest.TestCase):
     def test_on_board(self):
         for test in self.success_test_params:
             print(test[KEY_INPUT])
-            actual_result = on_board(test[KEY_INPUT])
+            actual_result = board(test[KEY_INPUT])
             print(actual_result)
             expected_result = test[KEY_EXPECTED]
             print(expected_result)

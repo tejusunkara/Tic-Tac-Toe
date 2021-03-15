@@ -145,6 +145,7 @@ export function Board(props) {
     // resetting board
     socket.on('restart', (data) => {
       console.log('restart');
+      console.log(data);
     });
   }, []);
 
