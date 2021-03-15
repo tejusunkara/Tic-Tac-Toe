@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 import { PropTypes } from 'prop-types';
 import { Box } from './Box';
-// import { Winner } from './Winner.js';
 
 const socket = io(); // connect to server app.py
 
@@ -58,11 +57,9 @@ export function Board(props) {
     if (newBoard.includes(null) && isPlayer && !boxFilled) {
       // if there are unmarked boxes and user who clicked is a player and the box that was clicked
       // on isnt filled
-      // console.log('open boxes, isplayer, and box not filled');
       if (xPlaysNext && username === PlayerX) {
         // if next player is X and current user clicking is PlayerX, print X in cell
         newBoard[boxNumber] = 'X';
-        // console.log('X');
         setPlaysNext(!xPlaysNext); // only switch players if the correct player clicks on the board
         socket.emit('board', {
           updateBoard: newBoard,
@@ -74,7 +71,6 @@ export function Board(props) {
       } else if (!xPlaysNext && username === PlayerO) {
         // if next player is O and current user is PlayerO, print O in cell
         newBoard[boxNumber] = 'O';
-        // console.log('O');
         setPlaysNext(!xPlaysNext);
         socket.emit('board', {
           updateBoard: newBoard,
@@ -85,7 +81,6 @@ export function Board(props) {
         }); // emits only if PlayerO clicks the board
       }
       setBoard(newBoard);
-      // console.log('fill in board');
     }
     if (!newBoard.includes(null) || calculateWinner(newBoard)) {
       // if there is a winner or if the board is full
@@ -93,17 +88,14 @@ export function Board(props) {
       let result = '';
       let loser = '';
       if (calculateWinner(newBoard) === 'X') {
-        // console.log('winner is X');
         winner = `Winner is ${PlayerX}!`;
         result = PlayerX;
         loser = PlayerO;
       } else if (calculateWinner(newBoard) === 'O') {
-        // console.log('winner is O');
         winner = `Winner is ${PlayerO}!`;
         result = PlayerO;
         loser = PlayerX;
       } else {
-        // console.log('no winner');
         winner = 'No winner :(';
         result = 'draw';
       }
@@ -123,8 +115,7 @@ export function Board(props) {
   useEffect(() => {
     // updating board
     socket.on('board', (data) => {
-      // console.log('Board was clicked');
-      // console.log(data);
+      console.log('Board was clicked');
       setBoard(data.updateBoard);
       setPlaysNext(data.xPlaysNext);
       setGameOver(data.gameOver);
@@ -135,18 +126,12 @@ export function Board(props) {
   function onClickRestart() {
     // When the game ends, Player X and Player O will have the option to click a
     // button to play again
-    // console.log('play again');
     // set all states to initial values
     const emptyBoard = [null, null, null, null, null, null, null, null];
     setBoard(emptyBoard);
     setPlaysNext(true);
     setGameOver(false);
     setWinnerMessage('');
-    // console.log('clickReplay:');
-    // console.log(board);
-    // console.log(xPlaysNext);
-    // console.log(gameOver);
-    // console.log(winnerMessage);
     socket.emit('restart', {
       updateBoard: emptyBoard,
       cell: null,
@@ -159,14 +144,12 @@ export function Board(props) {
   useEffect(() => {
     // resetting board
     socket.on('restart', (data) => {
-      // console.log('restart');
-      console.log(data);
+      console.log('restart');
     });
   }, []);
 
   if (gameOver) {
     // display once winner is calculated
-    // console.log(winnerMessage);
     if (username === PlayerX || username === PlayerO) {
       // display play again button for player X and player O
       return (

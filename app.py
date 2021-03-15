@@ -4,7 +4,7 @@ from flask import Flask, send_from_directory, json
 from flask_socketio import SocketIO
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv, find_dotenv
-from flask_CORS import CORS
+from flask_cors import CORS
 
 # pylint: disable=no-member, too-few-public-methods, wrong-import-position, invalid-envvar-default, global-statement
 
@@ -97,6 +97,11 @@ def on_board(data):  # data is whatever arg you pass in your emit call on client
     print(data)
     # This emits the 'onClickBoard' event from the server to all clients except for
     # the client that emmitted the event that triggered this function
+    dict = {}
+    for key, value in data.items():
+        if key == 'cell':
+            dict[key] = value
+            return dict
 
     SOCKETIO.emit('board', data, broadcast=True, include_self=False)
 
@@ -152,11 +157,19 @@ def on_winner(data):  # update the ranking for that username in the DB based on 
 def on_restart(data):
     '''to replay'''
     print('restart ' + str(data))
+    
+    dict = {}
+    for x,y in data.items():
+        if x == 'updateBoard' and y == [None, None, None, None, None, None, None, None, None]:
+            dict[x] = y
+        print(dict)
+        return dict
+    
     SOCKETIO.emit('restart', data, broadcast=True, include_self=False)
 
 
-def update_db(users, rankings): # orders players by rankings
-    '''updates user list according to ranks'''
+def update_db(users, rankings):
+    '''orders players by rankings'''
     # models.Player.query.order_by(models.Player.rank.desc())
     # table should be ordered from highest to lowest score
     all_players = DB.session.query(models.Player).order_by(models.Player.rank.desc())
@@ -168,6 +181,7 @@ def update_db(users, rankings): # orders players by rankings
 
     print(users)
     print(rankings)
+    return users
 
 # Note we need to add this line so we can import app in the python shell
 if __name__ == "__main__":
@@ -176,3 +190,4 @@ if __name__ == "__main__":
         host=os.getenv('IP', '0.0.0.0'),
         port=8081 if os.getenv('C9_PORT') else int(os.getenv('PORT', 8081)),
     )
+    
