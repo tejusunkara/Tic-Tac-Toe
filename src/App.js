@@ -65,9 +65,10 @@ function App() {
           PlayerO={userList.O}
           Spectators={userList.Spectators}
           username={username}
+          socketio={socket}
         />
         <div className="leaderboard">
-          <Leaderboard ranks={ranks} players={users} currUser={username} />
+          <Leaderboard ranks={ranks} players={users} currUser={username} socket={socket} />
         </div>
       </div>
     );

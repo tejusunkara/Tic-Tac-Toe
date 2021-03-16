@@ -7,6 +7,7 @@ export function LoginDisplay(props) {
   const { PlayerX } = props;
   const { PlayerO } = props;
   const { username } = props;
+  const { socketio } = props;
 
   return (
     <div className="greeting">
@@ -17,6 +18,7 @@ export function LoginDisplay(props) {
           PlayerO={PlayerO}
           Spectators={Spectators}
           username={username}
+          socket={socketio}
         />
       </div>
       <div className="userslist">
@@ -47,6 +49,7 @@ LoginDisplay.propTypes = {
   PlayerX: PropTypes.string.isRequired,
   PlayerO: PropTypes.string.isRequired,
   username: PropTypes.string.isRequired,
+  socketio: PropTypes.func.isRequired,
 };
 
 LoginDisplay.defaultProps = {

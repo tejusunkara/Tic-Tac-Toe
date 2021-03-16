@@ -1,9 +1,8 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
-import io from 'socket.io-client';
 import { PropTypes } from 'prop-types';
 
-const socket = io();
+// const socket = io();
 
 export function Leaderboard(props) {
   const [showData, setShowData] = useState(false); // to show leaderboard or not
@@ -12,6 +11,7 @@ export function Leaderboard(props) {
   const { players } = props;
   const { ranks } = props;
   const { currUser } = props;
+  const { socket } = props;
 
   function showLeaderboard() {
     // display all players and their ranking
@@ -95,6 +95,7 @@ Leaderboard.propTypes = {
   ranks: PropTypes.arrayOf(PropTypes.number).isRequired,
   players: PropTypes.arrayOf(PropTypes.string).isRequired,
   currUser: PropTypes.string.isRequired,
+  socket: PropTypes.func.isRequired,
 };
 
 export default Leaderboard;

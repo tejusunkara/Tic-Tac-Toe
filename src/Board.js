@@ -1,10 +1,9 @@
 // client
 import React, { useState, useEffect } from 'react';
-import io from 'socket.io-client';
 import { PropTypes } from 'prop-types';
 import { Box } from './Box';
 
-const socket = io(); // connect to server app.py
+// const socket = io(); // connect to server app.py
 
 export function Board(props) {
   const [board, setBoard] = useState([
@@ -24,6 +23,7 @@ export function Board(props) {
   const { PlayerX } = props;
   const { PlayerO } = props;
   const { username } = props;
+  const { socket } = props;
 
   function calculateWinner(squares) {
     const lines = [
@@ -194,5 +194,6 @@ Board.propTypes = {
   PlayerX: PropTypes.string.isRequired,
   PlayerO: PropTypes.string.isRequired,
   username: PropTypes.string.isRequired,
+  socket: PropTypes.func.isRequired,
 };
 export default Board;
