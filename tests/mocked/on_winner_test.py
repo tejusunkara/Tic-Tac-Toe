@@ -1,10 +1,8 @@
 '''test on_winner function in app.py'''
 import unittest
-import unittest.mock as mock
 from unittest.mock import patch
 import os
 import sys
-
 # This lets you import from the parent directory (one level up)
 sys.path.append(os.path.dirname(os.path.abspath('../')))
 from app import winner_test
@@ -20,16 +18,16 @@ class OnWinnerTestCase(unittest.TestCase):
     print('in class')
     def setUp(self):
         '''defining success parameters'''
-        playerX = models.Player(username='X', rank=100)
-        playerO = models.Player(username='O', rank=100)
-        self.user_ranks = [playerX.rank, playerO.rank]
-        self.initial_db_users = [playerX, playerO]
-        
+        player_x = models.Player(username='X', rank=100)
+        player_o = models.Player(username='O', rank=100)
+        self.user_ranks = [player_x.rank, player_o.rank]
+        self.initial_db_users = [player_x, player_o]
+
         self.success_test_params = [
             {
                 KEY_INPUT: {
-                    'winner': playerX,
-                    'loser': playerO
+                    'winner': player_x,
+                    'loser': player_o
                 },
                 KEY_EXPECTED : [101, 99]
             },
@@ -42,27 +40,26 @@ class OnWinnerTestCase(unittest.TestCase):
             },
             {
                 KEY_INPUT: {
-                    'winner': playerO,
-                    'loser': playerX
+                    'winner': player_o,
+                    'loser': player_x
                 },
                 KEY_EXPECTED : [100, 100]
             }
         ]
-    
+
     def mocked_db_session_commit(self):
         '''mocking db.session.commit'''
-        pass
-    
+
     def test_on_winner(self):
         '''testing logic'''
         for test in self.success_test_params:
             with patch('app.DB.session.commit', self.mocked_db_session_commit):
-    
+
                 actual_result = winner_test(test[KEY_INPUT])
                 print(actual_result)
                 expected_result = test[KEY_EXPECTED]
                 print(expected_result)
-    
+
                 self.assertEqual(actual_result, expected_result)
                 self.assertEqual(type(actual_result), type(expected_result))
 
