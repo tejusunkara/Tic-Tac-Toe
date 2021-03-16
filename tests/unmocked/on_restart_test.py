@@ -1,3 +1,4 @@
+'''tests on_restart function in app.py'''
 import unittest
 import unittest.mock as mock
 from unittest.mock import patch
@@ -12,7 +13,9 @@ KEY_INPUT = "input"
 KEY_EXPECTED = "expected"
 
 class OnRestartTestCase(unittest.TestCase):
+    '''test cases for testing on_restart'''
     def setUp(self):
+        '''defining success parameters'''
         self.success_test_params = [
             {
                 KEY_INPUT: {
@@ -57,6 +60,7 @@ class OnRestartTestCase(unittest.TestCase):
         ]
         
     def test_on_restart(self):
+        '''testing logic'''
         for test in self.success_test_params:
             
             actual_result = restart(test[KEY_INPUT])

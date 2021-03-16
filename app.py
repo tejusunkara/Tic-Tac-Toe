@@ -102,6 +102,7 @@ def on_board(data):  # data is whatever arg you pass in your emit call on client
     SOCKETIO.emit('board', data, broadcast=True, include_self=False)
 
 def board(element):
+    '''to test on_board logic in tests/unmocked/on_board_test.py'''
     dict = {}
     for key, value in element.items():
         if key == 'cell':
@@ -147,7 +148,7 @@ def on_winner(data):  # update the ranking for that username in the DB based on 
     users = []
     rankings = []
     update_db(users, rankings)
-
+    
     SOCKETIO.emit('leaderboard', {
         "users": users,
         "ranks": rankings
@@ -155,6 +156,14 @@ def on_winner(data):  # update the ranking for that username in the DB based on 
                   broadcast=True,
                   include_self=True)
 
+def winner_test(elements):
+    if (elements['winner'] != 'draw') and (elements['loser'] != ''):
+        elements['winner'].rank = elements['winner'].rank + 1
+        elements['loser'].rank = elements['loser'].rank - 1
+        DB.session.commit()
+        return [elements['winner'].rank, elements['loser'].rank]
+    else:
+        return None
 
 @SOCKETIO.on('restart')
 def on_restart(data):
@@ -166,18 +175,17 @@ def on_restart(data):
     SOCKETIO.emit('restart', data, broadcast=True, include_self=False)
 
 def restart(element):
+    '''to test on_restart logic in tests/unmocked/on_restart_test.py'''
     dict = {}
     for x,y in element.items():
         if x == 'updateBoard' and y == [None, None, None, None, None, None, None, None, None]:
             dict[x] = y
         if x == 'cell' and y is None:
             dict[x] = y
-        print(dict)
     return dict
 
 def update_db(users, rankings):
     '''orders players by rankings'''
-    # models.Player.query.order_by(models.Player.rank.desc())
     # table should be ordered from highest to lowest score
     all_players = DB.session.query(models.Player).order_by(models.Player.rank.desc())
     # clearing arrays before populating them with correctly ordered data
@@ -188,7 +196,6 @@ def update_db(users, rankings):
 
     print(users)
     print(rankings)
-    return users
 
 # Note we need to add this line so we can import app in the python shell
 if __name__ == "__main__":

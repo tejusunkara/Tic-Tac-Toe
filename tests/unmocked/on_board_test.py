@@ -1,3 +1,4 @@
+'''tests board function in app.py'''
 import unittest
 import unittest.mock as mock
 from unittest.mock import patch
@@ -12,7 +13,9 @@ KEY_INPUT = "input"
 KEY_EXPECTED = "expected"
 
 class OnBoardTestCase(unittest.TestCase):
+    '''test cases for testing on_board'''
     def setUp(self):
+        '''defining success parameters'''
         self.success_test_params = [
             {
                 KEY_INPUT: {
@@ -56,6 +59,7 @@ class OnBoardTestCase(unittest.TestCase):
         ]
         
     def test_on_board(self):
+        '''testing logic'''
         for test in self.success_test_params:
             print(test[KEY_INPUT])
             actual_result = board(test[KEY_INPUT])
