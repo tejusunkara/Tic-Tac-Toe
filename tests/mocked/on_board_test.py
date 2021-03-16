@@ -77,15 +77,16 @@ class OnBoardSocketTest(unittest.TestCase):
             flask_test_client = APP.test_client()
 
             # connect to Socket.IO without being logged in
-            socketio_test_client = SOCKETIO.test_client(APP, flask_test_client=flask_test_client)
+            socketio_test_client = SOCKETIO.test_client(
+                APP, flask_test_client=flask_test_client)
 
-            # log in via HTTP
             actual_result = flask_test_client.post('/', data=test[KEY_INPUT])
             print(actual_result.status_code)
             self.assertEqual(actual_result.status_code, 200)
 
             # connect to Socket.IO again, but now as a logged in user
-            socketio_test_client = SOCKETIO.test_client(APP, flask_test_client=flask_test_client)
+            socketio_test_client = SOCKETIO.test_client(
+                APP, flask_test_client=flask_test_client)
 
             # make sure the server accepted the connection
             actual_result = socketio_test_client.get_received()

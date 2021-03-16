@@ -1,6 +1,6 @@
 '''server'''
 import os
-from flask import Flask, send_from_directory, json
+from flask import Flask, send_from_directory, json, request
 from flask_socketio import SocketIO
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv, find_dotenv
@@ -38,7 +38,7 @@ SOCKETIO = SocketIO(APP,
                     manage_session=False)
 
 
-@APP.route('/', defaults={"filename": "index.html"})
+@APP.route('/', defaults={"filename": "index.html"}, methods=['POST'])
 @APP.route('/<path:filename>')
 def index(filename):
     '''index'''
@@ -50,6 +50,12 @@ def index(filename):
 def on_connect():
     '''when user is connected'''
     print('User connected!')
+    if request.method == 'POST':
+        print('server')
+        data = request.form
+        on_board(data)
+        return ''
+    
 
 
 # When a client disconnects from this Socket connection, this function is run
