@@ -38,7 +38,7 @@ SOCKETIO = SocketIO(APP,
                     manage_session=False)
 
 
-@APP.route('/', defaults={"filename": "index.html"}, methods=['POST'])
+@APP.route('/', defaults={"filename": "index.html"})
 @APP.route('/<path:filename>')
 def index(filename):
     '''index'''
@@ -50,11 +50,11 @@ def index(filename):
 def on_connect():
     '''when user is connected'''
     print('User connected!')
-    if request.method == 'POST':
-        print('server')
-        data = request.form
-        on_board(data)
-        return ''
+    # if request.method == 'POST':
+    #     print('server')
+    #     data = request.form
+    #     on_board(data)
+    #     return ''
     
 
 
