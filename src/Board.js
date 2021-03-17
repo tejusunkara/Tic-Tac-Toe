@@ -156,7 +156,11 @@ export function Board(props) {
       return (
         <div className="playerMessage">
           <div>{winnerMessage}</div>
-          <button className="replay" type="submit" onClick={() => onClickRestart()}>
+          <button
+            className="replay"
+            type="submit"
+            onClick={() => onClickRestart()}
+          >
             Restart
           </button>
         </div>
@@ -169,7 +173,7 @@ export function Board(props) {
     );
   }
 
-  const status = `Next player: ${(xPlaysNext ? PlayerX : PlayerO)}`;
+  const status = `Next player: ${xPlaysNext ? PlayerX : PlayerO}`;
 
   return (
     <div>

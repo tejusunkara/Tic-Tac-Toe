@@ -35,7 +35,7 @@ export function Leaderboard(props) {
 
   const renderTable = usernames.map((user, index) => {
     const score = rank[index];
-    console.log(rank);
+    console.log(score);
     if (user === currUser) {
       return (
         <tr>

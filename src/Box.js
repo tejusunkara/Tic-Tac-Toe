@@ -1,7 +1,8 @@
 import React from 'react';
 import { PropTypes } from 'prop-types';
 
-export function Box(props) { // for each cell
+export function Box(props) {
+  // for each cell
   const { board } = props;
   const { onClick } = props;
   return (

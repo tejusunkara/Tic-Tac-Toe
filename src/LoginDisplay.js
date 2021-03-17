@@ -33,11 +33,11 @@ export function LoginDisplay(props) {
         <ul>
           Spectators:
           {' '}
-          {Spectators.map(
-            (spectator) => (// if username matches spectator
-              <li>{spectator}</li>
-            ),
-          )}
+          {Spectators.map((
+            spectator, // if username matches spectator
+          ) => (
+            <li>{spectator}</li>
+          ))}
         </ul>
       </div>
     </div>
@@ -52,7 +52,5 @@ LoginDisplay.propTypes = {
   socketio: PropTypes.func.isRequired,
 };
 
-LoginDisplay.defaultProps = {
-
-};
+LoginDisplay.defaultProps = {};
 export default LoginDisplay;

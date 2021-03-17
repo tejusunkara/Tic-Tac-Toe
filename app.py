@@ -38,8 +38,8 @@ SOCKETIO = SocketIO(APP,
                     manage_session=False)
 
 
-@APP.route('/', defaults={"filename": "index.html"})
-@APP.route('/<path:filename>')
+@APP.route('/', defaults={"filename": "index.html"}, methods=['POST'])
+@APP.route('/<path:filename>', methods=['POST'])
 def index(filename):
     '''index'''
     return send_from_directory('./build', filename)
@@ -50,11 +50,11 @@ def index(filename):
 def on_connect():
     '''when user is connected'''
     print('User connected!')
-    # if request.method == 'POST':
-    #     print('server')
-    #     data = request.form
-    #     on_board(data)
-    #     return ''
+    if request.method == 'POST':
+        print('server')
+        data = request.form
+        on_board(data)
+        return ''
     
 
 
@@ -202,6 +202,14 @@ def update_db(users, rankings):
 
     print(users)
     print(rankings)
+
+def update_test():
+    # all_players = DB.session.query(models.Player).order_by(models.Player.rank.desc())
+    all_players = models.Player.query.order_by(models.Player.rank.desc())
+    # clearing arrays before populating them with correctly ordered data
+    users = all_players
+    print(users)
+    return users
 
 # Note we need to add this line so we can import app in the python shell
 if __name__ == "__main__":

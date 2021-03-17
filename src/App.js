@@ -68,7 +68,12 @@ function App() {
           socketio={socket}
         />
         <div className="leaderboard">
-          <Leaderboard ranks={ranks} players={users} currUser={username} socket={socket} />
+          <Leaderboard
+            ranks={ranks}
+            players={users}
+            currUser={username}
+            socket={socket}
+          />
         </div>
       </div>
     );
