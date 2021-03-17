@@ -1,6 +1,6 @@
 '''server'''
 import os
-from flask import Flask, send_from_directory, json, request
+from flask import Flask, send_from_directory, json
 from flask_socketio import SocketIO
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv, find_dotenv
@@ -38,8 +38,8 @@ SOCKETIO = SocketIO(APP,
                     manage_session=False)
 
 
-@APP.route('/', defaults={"filename": "index.html"}, methods=['POST'])
-@APP.route('/<path:filename>', methods=['POST'])
+@APP.route('/', defaults={"filename": "index.html"})
+@APP.route('/<path:filename>')
 def index(filename):
     '''index'''
     return send_from_directory('./build', filename)
@@ -50,12 +50,6 @@ def index(filename):
 def on_connect():
     '''when user is connected'''
     print('User connected!')
-    if request.method == 'POST':
-        print('server')
-        data = request.form
-        on_board(data)
-        return ''
-    
 
 
 # When a client disconnects from this Socket connection, this function is run
@@ -98,7 +92,8 @@ def on_login(data):
 # When a client emits the event 'onClickBoard' to the server, this function is run
 # 'onClickBoard' is a custom event name that we just decided
 @SOCKETIO.on('board')
-def on_board(data):  # data is whatever arg you pass in your emit call on client
+def on_board(
+        data):  # data is whatever arg you pass in your emit call on client
     '''when user clicks on board'''
     print(data)
     # This emits the 'onClickBoard' event from the server to all clients except for
@@ -107,14 +102,16 @@ def on_board(data):  # data is whatever arg you pass in your emit call on client
 
     SOCKETIO.emit('board', data, broadcast=True, include_self=False)
 
+
 def board(element):
     '''to test on_board logic in tests/unmocked/on_board_test.py'''
-    dict = {}
+    board_dict = {}
     for key, value in element.items():
         if key == 'cell':
-            dict[key] = value
-        
-    return dict
+            board_dict[key] = value
+
+    return board_dict
+
 
 @SOCKETIO.on('leaderboard')
 def on_leaderboard(data):  # updating leaderboard data
@@ -154,7 +151,7 @@ def on_winner(data):  # update the ranking for that username in the DB based on 
     users = []
     rankings = []
     update_db(users, rankings)
-    
+
     SOCKETIO.emit('leaderboard', {
         "users": users,
         "ranks": rankings
@@ -162,38 +159,45 @@ def on_winner(data):  # update the ranking for that username in the DB based on 
                   broadcast=True,
                   include_self=True)
 
+
 def winner_test(elements):
+    '''testing on_winner'''
     if (elements['winner'] != 'draw') and (elements['loser'] != ''):
         elements['winner'].rank = elements['winner'].rank + 1
         elements['loser'].rank = elements['loser'].rank - 1
         DB.session.commit()
         return [elements['winner'].rank, elements['loser'].rank]
-    else:
-        return None
+    return None
+
 
 @SOCKETIO.on('restart')
 def on_restart(data):
     '''to replay'''
     print('restart ' + str(data))
-    
+
     restart(data)
-    
+
     SOCKETIO.emit('restart', data, broadcast=True, include_self=False)
+
 
 def restart(element):
     '''to test on_restart logic in tests/unmocked/on_restart_test.py'''
-    dict = {}
-    for x,y in element.items():
-        if x == 'updateBoard' and y == [None, None, None, None, None, None, None, None, None]:
-            dict[x] = y
-        if x == 'cell' and y is None:
-            dict[x] = y
-    return dict
+    restart_dict = {}
+    for x_key, y_value in element.items():
+        if x_key == 'updateBoard' and y_value == [
+                None, None, None, None, None, None, None, None, None
+        ]:
+            restart_dict[x_key] = y_value
+        if x_key == 'cell' and y_value is None:
+            restart_dict[x_key] = y_value
+    return restart_dict
+
 
 def update_db(users, rankings):
     '''orders players by rankings'''
     # table should be ordered from highest to lowest score
-    all_players = DB.session.query(models.Player).order_by(models.Player.rank.desc())
+    all_players = DB.session.query(models.Player).order_by(
+        models.Player.rank.desc())
     # clearing arrays before populating them with correctly ordered data
 
     for player in all_players:  # reordering users based on rank order
@@ -203,13 +207,16 @@ def update_db(users, rankings):
     print(users)
     print(rankings)
 
+
 def update_test():
+    '''testing update_db'''
     # all_players = DB.session.query(models.Player).order_by(models.Player.rank.desc())
     all_players = models.Player.query.order_by(models.Player.rank.desc())
     # clearing arrays before populating them with correctly ordered data
     users = all_players
     print(users)
     return users
+
 
 # Note we need to add this line so we can import app in the python shell
 if __name__ == "__main__":
@@ -218,4 +225,3 @@ if __name__ == "__main__":
         host=os.getenv('IP', '0.0.0.0'),
         port=8081 if os.getenv('C9_PORT') else int(os.getenv('PORT', 8081)),
     )
-    

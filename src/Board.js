@@ -1,4 +1,5 @@
 // client
+/* eslint-disable no-unused-expressions */
 import React, { useState, useEffect } from 'react';
 import { PropTypes } from 'prop-types';
 import { Box } from './Box';
@@ -115,7 +116,7 @@ export function Board(props) {
   useEffect(() => {
     // updating board
     socket.on('board', (data) => {
-      console.log('Board was clicked');
+      // console.log('Board was clicked');
       setBoard(data.updateBoard);
       setPlaysNext(data.xPlaysNext);
       setGameOver(data.gameOver);
@@ -144,7 +145,7 @@ export function Board(props) {
   useEffect(() => {
     // resetting board
     socket.on('restart', (data) => {
-      console.log('restart');
+      // console.log('restart');
       console.log(data);
     });
   }, []);

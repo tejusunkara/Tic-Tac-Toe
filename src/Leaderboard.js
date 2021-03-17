@@ -23,7 +23,7 @@ export function Leaderboard(props) {
 
   useEffect(() => {
     socket.on('leaderboard', (data) => {
-      console.log(data);
+      // console.log(data);
       setUsernames(data.users);
       setRank(data.ranks);
     });
@@ -35,7 +35,7 @@ export function Leaderboard(props) {
 
   const renderTable = usernames.map((user, index) => {
     const score = rank[index];
-    console.log(score);
+    // console.log(score);
     if (user === currUser) {
       return (
         <tr>
