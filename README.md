@@ -1,6 +1,4 @@
-# Project 2: Tic Tac Toe
-
-## Milestone 1: A simple live 2-player tic tac toe app
+# Tic Tac Toe
 
 ## Requirements
 
@@ -32,25 +30,3 @@
 3. Create a new remote DB on your Heroku app: `heroku addons:create heroku-postgresql:hobby-dev` (If that doesn't work, add a `-a {your-app-name}`
 4. See the config vars set by Heroku for you: `heroku config`. Copy paste the value for DATABASE_URL
 5. Set the value of `DATABASE_URL` as an environment variable by entering this in the terminal: `export DATABASE_URL='copy-paste-value-in-here'` or create a `.env` file in your current directory and set `DATABASE_URL`
-
-### Known Problems and Technical Issues
-
-#### Known Problems:
-
-1. Leaderboard only updates once `Show Leaderboard` button is clicked.
-
-I would revise my Leaderboard component and prompt for an update outside of the `showLeaderboard` function.
-
-2. Additional features I would implement:
-
-If there was more time, I would implement a mechanism to show a history of moves. I would do so using an array to keep track of the moves made. If user wanted to go back a move, they could do so.
-
-#### Technical Issues:
-
-1. Database queries were not returning properly
-
-I solved this issue by using `db.session.query` to query instead of `models.Player.query`. I would able to find resources and documentation online for this notation fairly easy, which helped me grasp why one query worked over the other.
-
-2. Printing usernames next to thier respective ranks
-
-I fixed this issue with the help of a classmate in Slack. They were kind enough to send a sample of printing usernames and ranks in the `<table>` tag in the return statement.
