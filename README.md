@@ -1,4 +1,4 @@
-# Tic Tac Toe
+# Live, 2-Player Tic Tac Toe
 
 ## Requirements
 1. `npm install`
